@@ -1,4 +1,5 @@
-import './globals.css'
+import Navbar from '@components/navbar/Navbar'
+import '@styles/globals.css'
 import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -15,7 +16,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className=''>
+        <div className='main'>
+          <div className='gradient'></div>
+        </div>
+        
+        <main className=' relative z-10 flex justify-center items-center flex-col max-w-7xl mx-auto'>
+          <Navbar/>
+          {children}
+        </main>
+      </body>
     </html>
   )
 }
