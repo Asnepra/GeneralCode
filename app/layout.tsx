@@ -1,4 +1,5 @@
 import Navbar from '@components/navbar/Navbar'
+import LoginModal from '@components/navbar/modals/LoginModal'
 import Modal from '@components/navbar/modals/Modal'
 import RegisterModal from '@components/navbar/modals/RegisterModal'
 import ToastProvider from '@components/provider/ToastProvider'
@@ -29,6 +30,7 @@ export default function RootLayout({
           <ToastProvider/>
           <Navbar/>
           <RegisterModal />
+          <LoginModal/>
           
           {children}
         </main>

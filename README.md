@@ -47,3 +47,7 @@ These are the libraries used for the implementation of the backend of the Login 
 
 ## Buttons.tsx, Heading.tsx, Avatar.tsx are available for the full app and are not just for the user sign in and registration
 Hence, it has been designed in such a way that they can be used in the full application depedning ont the type of parameters passed
+
+
+## After adding the Google and Github probiders, 
+Do not forgot to add the dependencies for the Google and Github user profiel images.
