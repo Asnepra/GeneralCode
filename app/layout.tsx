@@ -1,4 +1,8 @@
 import Navbar from '@components/navbar/Navbar'
+import Modal from '@components/navbar/modals/Modal'
+import RegisterModal from '@components/navbar/modals/RegisterModal'
+import ToastProvider from '@components/provider/ToastProvider'
+
 import '@styles/globals.css'
 import { Inter } from 'next/font/google'
 
@@ -22,7 +26,10 @@ export default function RootLayout({
         </div>
         
         <main className=' relative z-10 flex justify-center items-center flex-col max-w-7xl mx-auto'>
+          <ToastProvider/>
           <Navbar/>
+          <RegisterModal />
+          
           {children}
         </main>
       </body>

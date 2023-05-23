@@ -39,3 +39,11 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 Avatar.tsx is outside the navabar as it is going to be used in the app in multiple places,
 like for blog posts, for comments and much more.
 Hence it is kept outside the navabar completely.
+
+## Added react-icons, react-hook-form, bcrypt, next-auth, axios, zustand
+These are the libraries used for the implementation of the backend of the Login and Register functionality. Also,one can use the prisma/mongodb for the backend for login and registration. Set up Toaster Provider before using react-hot-toast
+
+## Added react-hot-toast for the toast messages for debugging and for the user information purposes
+
+## Buttons.tsx, Heading.tsx, Avatar.tsx are available for the full app and are not just for the user sign in and registration
+Hence, it has been designed in such a way that they can be used in the full application depedning ont the type of parameters passed

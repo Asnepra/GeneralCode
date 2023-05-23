@@ -2,8 +2,12 @@ import Avatar from '@components/Avatar';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import MenuItem from './MenuItem';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
+import useRegisterModal from '@hooks/useRegisterModal';
+import useLoginModal from '@hooks/useLoginModal';
 
 const UserMenu = () => {
+  const registerModal= useRegisterModal();
+  const loginModal = useLoginModal();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [iconState, setIconState] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -23,9 +27,15 @@ const UserMenu = () => {
     setIconState((state) => !state);
   }, []);
 
-  const handleMenuItemClick = useCallback(() => {
+  const handleMenuLoginItemClick = useCallback(() => {
     setMenuIsOpen(false);
     setIconState(false);
+    loginModal.onOpen();
+  }, []);
+  const handleMenuRegisterItemClick = useCallback(() => {
+    setMenuIsOpen(false);
+    setIconState(false);
+    registerModal.onOpen();
   }, []);
 
   useEffect(() => {
@@ -59,8 +69,8 @@ const UserMenu = () => {
         >
           <div className='flex flex-col cursor-pointer'>
             <>
-              <MenuItem onClick={handleMenuItemClick} label='Login' />
-              <MenuItem onClick={handleMenuItemClick} label='Register' />
+              <MenuItem onClick={handleMenuLoginItemClick} label='Login' />
+              <MenuItem onClick={handleMenuRegisterItemClick} label='Register' />
             </>
           </div>
         </div>
