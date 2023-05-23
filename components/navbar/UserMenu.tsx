@@ -1,46 +1,72 @@
-'use client'
-
 import Avatar from '@components/Avatar';
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import MenuItem from './MenuItem';
+import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 
 const UserMenu = () => {
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [iconState, setIconState] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
-    const [menuIsOpen, setMenuIsOpen] = useState(true);
+  const handleOutsideClick = useCallback(
+    (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setMenuIsOpen(false);
+        setIconState(false);
+      }
+    },
+    []
+  );
 
-    //Function to toggle open the UserMenu
+  const toggleUserMenu = useCallback(() => {
+    setMenuIsOpen((value) => !value);
+    setIconState((state) => !state);
+  }, []);
 
-    const toggleUserMenu= useCallback(() => {
-        //Return the opposite of the current state
-        setMenuIsOpen((value)=>!value);
-    },[]);
-    const iconSize= 27;
+  const handleMenuItemClick = useCallback(() => {
+    setMenuIsOpen(false);
+    setIconState(false);
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [handleOutsideClick]);
+
+  const iconSize = 22;
+  const avatarSize = 27;
+
   return (
     <div className='relative'>
-        <div className='flex flex-row items-center gap-3'>
-            <div className='p-1 md:py-1 md:px-2 border-b-[1px] border-neutral-100 flex flex-row items-center gap-3 rounded-full hover:shadow-md transition cursor-pointer' onClick={toggleUserMenu}>
-                {/**Add the Menu Hamburger Icon */}
-                <svg width={iconSize} height={iconSize} viewBox="0 0 100 100">
-                <path d="M20 20H80V80H20z" stroke="black" stroke-width="2" fill="none"/>
-                <path d="M20 40H80V60H20z" stroke="black" stroke-width="2" fill="none"/>
-                <path d="M40 20H60V80H40z" stroke="black" stroke-width="2" fill="none"/>
-                </svg>
-                <Avatar></Avatar>
-            </div>
-
+      <div className='flex flex-row items-center gap-3'>
+        <div
+          className='p-1 md:py-1 md:px-2 border-b-[1px] border-neutral-100 flex flex-row items-center gap-3 rounded-full hover:shadow-md transition cursor-pointer'
+          >
+          {iconState ? (
+            <AiOutlineClose onClick={toggleUserMenu} size={iconSize} />
+          ) : (
+            <AiOutlineMenu onClick={toggleUserMenu} size={iconSize} />
+          )}
+          <Avatar avatarSize={avatarSize} />
         </div>
-        {menuIsOpen && (
-            <div className='absolute rounded-xl shadow-md bg-white overflow-hidden right-0 top-12 text-sm'>
-                <div className='flex flex-col cursor-pointer'>
-                    <>
-                    <MenuItem onClick={()=>{}} label='Login'/>
-                    <MenuItem onClick={()=>{}} label='Register'/>
-                    </>
-                </div>
-            </div>
-        )}
+      </div>
+      {menuIsOpen && (
+        <div
+          ref={ref}
+          className='absolute rounded-xl shadow-md bg-white overflow-hidden right-0 top-12 text-sm'
+        >
+          <div className='flex flex-col cursor-pointer'>
+            <>
+              <MenuItem onClick={handleMenuItemClick} label='Login' />
+              <MenuItem onClick={handleMenuItemClick} label='Register' />
+            </>
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
 export default UserMenu;

@@ -4,10 +4,17 @@
 import Image from 'next/image';
 import React from 'react'
 
-const Avatar = () => {
-    const size = 27;
+import {RxAvatar} from 'react-icons/rx'
+
+interface AvatarProps{
+  avatarSize?: number;
+}
+const Avatar:React.FC<AvatarProps> = ({
+  avatarSize
+}) => {
+    
   return (
-    <Image className='rounded-full' alt='User Profile Pic' src="/assets/images/logo.svg" height={size} width={size}></Image>
+   <RxAvatar size={avatarSize}/>
   )
 }
 
