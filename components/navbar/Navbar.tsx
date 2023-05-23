@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Logo from './Logo';
 import Search from './Search';
 import DarkModeToggleIcon from './DarkModeToggleIcon';
+import UserMenu from './UserMenu';
 
 const Navbar = () => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="dark:bg-slate-700/70 fixed top-0 left-0 bg-opacity-0 backdrop-filter backdrop-blur-sm flex flex-row justify-between w-full p-2 py-4 z-10 lg:px-8 shadow-sm border-b-[1px] border-slate-900/10 lg:border-0 dark:border-slate-300/10">
+    <div className="dark:bg-slate-700/70  bg-opacity-0 backdrop-filter backdrop-blur-sm flex flex-row justify-between w-full p-2 py-4 z-10 lg:px-8 shadow-sm border-b-[1px] border-slate-900/10 lg:border-0 dark:border-slate-300/10">
       <div className="px-2 flex items-center gap-3">
         <Logo />
       </div>
@@ -38,13 +39,10 @@ const Navbar = () => {
           </Link>
         </div>
         <Search />
-        <div
-          className="justify-between space-x-2 md:space-x-8 flex border-l border-slate-400 ml-3 pl-3 dark:border-slate-800 cursor-pointer"
-          onClick={toggleDarkMode}
-        >
-          <DarkModeToggleIcon />
-          <div>Login</div>
-        </div>
+        <DarkModeToggleIcon onClick={toggleDarkMode}/>
+        <UserMenu/>
+          
+        
       </div>
     </div>
   );
