@@ -31,16 +31,16 @@ const Navbar = () => {
 
       <div className="ml-auto flex items-center">
         <div className="hidden mr-2 md:mr-6 sm:flex space-x-8 text-sm leading-6 font-semibold text-slate-700 dark:text-slate-200">
-          <Link className="hover:text-sky-500 dark:hover:text-sky-400" href="/">
+          {/* <Link className="hover:text-sky-500 dark:hover:text-sky-400" href="/">
             Components
           </Link>
           <Link className="hover:text-sky-500 dark:hover:text-sky-400" href="/">
             Docs
-          </Link>
+          </Link> */}
         </div>
         <Search />
         <DarkModeToggleIcon onClick={toggleDarkMode}/>
-        <UserMenu/>
+        <UserMenu openLoginModel/>
           
         
       </div>

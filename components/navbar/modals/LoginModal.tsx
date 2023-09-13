@@ -68,14 +68,14 @@ const LoginModal = () => {
   }, [loginModal, registerModal])
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 p-2 ">
       <Heading
-        title="Welcome back"
+        title="Indian Oil"
         subtitle="Login to your account!"
       />
       <Input
         id="email"
-        label="Email"
+        label="Employee Id"
         disabled={isLoading}
         register={register}  
         errors={errors}
@@ -93,29 +93,7 @@ const LoginModal = () => {
     </div>
   )
 
-  const footerContent = (
-    <div className="flex flex-col gap-4 mt-3">
-      <hr />
-      <Button 
-        outline 
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn('google')}
-      />
-      <Button 
-        outline 
-        label="Continue with Github"
-        icon={AiFillGithub}
-        onClick={() => signIn('github')}
-      />
-      <div className="text-slate-700 text-center mt-3">
-        <p>First time using Airbnb?
-          <span onClick={onToggle} 
-            className="text-rose-500 font-bold cursor-pointer hover:underline"> Create an account</span>
-        </p>
-      </div>
-    </div>
-  )
+ 
 
   return (
     <Modal
@@ -126,7 +104,7 @@ const LoginModal = () => {
       onClose={loginModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
-      footer={footerContent}
+      
     />
   );
 }

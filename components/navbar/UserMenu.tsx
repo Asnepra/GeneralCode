@@ -4,14 +4,18 @@ import MenuItem from './MenuItem';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import useRegisterModal from '@hooks/useRegisterModal';
 import useLoginModal from '@hooks/useLoginModal';
-
-const UserMenu = () => {
+interface UserMenuProps{
+  openLoginModel?: boolean;
+}
+const UserMenu:React.FC<UserMenuProps> = ({
+  openLoginModel
+}) => {
   const registerModal= useRegisterModal();
   const loginModal = useLoginModal();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [iconState, setIconState] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
+ 
   const handleOutsideClick = useCallback(
     (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -21,6 +25,7 @@ const UserMenu = () => {
     },
     []
   );
+  
 
   const toggleUserMenu = useCallback(() => {
     setMenuIsOpen((value) => !value);
@@ -39,6 +44,7 @@ const UserMenu = () => {
   }, []);
 
   useEffect(() => {
+    loginModal.onOpen();
     document.addEventListener('mousedown', handleOutsideClick);
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
@@ -70,7 +76,7 @@ const UserMenu = () => {
           <div className='flex flex-col cursor-pointer'>
             <>
               <MenuItem onClick={handleMenuLoginItemClick} label='Login' />
-              <MenuItem onClick={handleMenuRegisterItemClick} label='Register' />
+              {/* <MenuItem onClick={handleMenuRegisterItemClick} label='Register' /> */}
             </>
           </div>
         </div>

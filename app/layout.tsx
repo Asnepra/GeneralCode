@@ -1,7 +1,5 @@
 import Navbar from '@components/navbar/Navbar'
 import LoginModal from '@components/navbar/modals/LoginModal'
-import Modal from '@components/navbar/modals/Modal'
-import RegisterModal from '@components/navbar/modals/RegisterModal'
 import ToastProvider from '@components/provider/ToastProvider'
 
 import '@styles/globals.css'
@@ -29,7 +27,7 @@ export default function RootLayout({
         <main className=' relative z-10 flex justify-center items-center flex-col max-w-7xl mx-auto'>
           <ToastProvider/>
           <Navbar/>
-          <RegisterModal />
+          
           <LoginModal/>
           
           {children}

@@ -8,7 +8,7 @@ const Logo = () => {
     const router = useRouter();
   return (
     <Link href="/">
-        <Image className="cursor-pointer" alt="Logo" src="assets/images/logo.svg" height={30} width={30}
+        <Image className="cursor-pointer" alt="Logo" src="/images/Indian_Oil_Logo.png" height={30} width={30}
          />
     </Link>
   )
