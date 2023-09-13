@@ -10,7 +10,6 @@ interface UserMenuProps{
 const UserMenu:React.FC<UserMenuProps> = ({
   openLoginModel
 }) => {
-  const registerModal= useRegisterModal();
   const loginModal = useLoginModal();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [iconState, setIconState] = useState(false);
@@ -37,14 +36,11 @@ const UserMenu:React.FC<UserMenuProps> = ({
     setIconState(false);
     loginModal.onOpen();
   }, []);
-  const handleMenuRegisterItemClick = useCallback(() => {
-    setMenuIsOpen(false);
-    setIconState(false);
-    registerModal.onOpen();
-  }, []);
+  
 
   useEffect(() => {
-    loginModal.onOpen();
+    //uncomment to load the loginModal on Home Page
+    //loginModal.onOpen();
     document.addEventListener('mousedown', handleOutsideClick);
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
