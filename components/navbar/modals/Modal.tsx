@@ -122,7 +122,7 @@ const Model:React.FC<ModalProps>=({
                                 {body}
                             </div>
                             {/**For Fotter */}
-                            <div className="flex flex-col p-1 pr-4 pl-4 gap-1 md:gap-2">
+                            <div className="flex flex-col p-4 gap-1 md:gap-2">
                                 <div className="flex flex-row items-center gap-2 w-full">
                                     {/**This is our primary action Button */}
                                     {secondaryAction && secondaryActionLabel&&(

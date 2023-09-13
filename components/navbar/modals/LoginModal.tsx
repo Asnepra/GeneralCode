@@ -8,8 +8,6 @@ import {
   SubmitHandler, 
   useForm
 } from "react-hook-form";
-import { FcGoogle } from "react-icons/fc";
-import { AiFillGithub } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 
 import useRegisterModal from "@/hooks/useRegisterModal";
@@ -23,7 +21,6 @@ import Button from "@components/Button";
 const LoginModal = () => {
   const router = useRouter();
   const loginModal = useLoginModal();
-  const registerModal = useRegisterModal();//To switch between register and login modal
   const [isLoading, setIsLoading] = useState(false);
 
   const { 
@@ -62,10 +59,6 @@ const LoginModal = () => {
     });
   }
 
-  const onToggle = useCallback(() => {
-    loginModal.onClose();
-    registerModal.onOpen();
-  }, [loginModal, registerModal])
 
   const bodyContent = (
     <div className="flex flex-col gap-4 p-2 ">
