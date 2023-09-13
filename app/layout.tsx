@@ -3,6 +3,7 @@ import LoginModal from '@components/navbar/modals/LoginModal'
 import ToastProvider from '@components/provider/ToastProvider'
 
 import './globals.css'
+import { Sidebar } from '@components/Sidebar'
 
 
 export const metadata = {
@@ -22,9 +23,12 @@ export default function RootLayout({
           <div className='gradient'></div>
         </div>
         
-        <main className=' relative z-10 flex justify-center items-center flex-col max-w-7xl mx-auto'>
+        <main className=' relative z-10 flex flex-col max-w-7xl mx-auto'>
           <ToastProvider/>
           <Navbar/>
+          <div className='hidden md:flex mt-16 w-20 flex-col fixed inset-y-0 '>
+            <Sidebar/>
+          </div>
           
           <LoginModal/>
           
