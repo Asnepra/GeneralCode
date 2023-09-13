@@ -2,10 +2,8 @@ import Navbar from '@components/navbar/Navbar'
 import LoginModal from '@components/navbar/modals/LoginModal'
 import ToastProvider from '@components/provider/ToastProvider'
 
-import '@styles/globals.css'
-import { Inter } from 'next/font/google'
+import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Create Next App',
