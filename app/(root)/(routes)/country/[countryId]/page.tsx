@@ -9,7 +9,7 @@ import axios from "axios";
 const AddCountryRootPage = async () => {
   //TODO: Check for user loggedin and has permission to add country
 
-  //Check if user likes to modify or add country to the DB
+  //Check if user likes to modify or add country to the DBy
   var countryCategories = [];
   try {
     const response = await axios.get(

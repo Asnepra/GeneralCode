@@ -32,7 +32,7 @@ export const Categories = ({ data }: CategoriesProps) => {
 
   return (
     <div className="w-full overflow-x-auto space-x-2 flex p-1">
-      <Link href="/addcountry">
+      <Link href="/country/new">
         <button
           onClick={() => onClick(undefined)}
           className={cn(
