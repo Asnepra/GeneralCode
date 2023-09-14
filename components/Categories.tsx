@@ -4,6 +4,7 @@ import qs from "query-string";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 interface CategoriesProps {
   data: { id: number; COUNTRY_NAME: string }[];
@@ -31,10 +32,11 @@ export const Categories = ({ data }: CategoriesProps) => {
 
   return (
     <div className="w-full overflow-x-auto space-x-2 flex p-1">
-      <button
-        onClick={() => onClick(undefined)}
-        className={cn(
-          `
+      <Link href="/addcountry">
+        <button
+          onClick={() => onClick(undefined)}
+          className={cn(
+            `
           flex 
           items-center 
           text-center 
@@ -49,11 +51,12 @@ export const Categories = ({ data }: CategoriesProps) => {
           hover:opacity-75 
           transition
         `,
-          !categoryId ? "bg-primary/25" : "bg-primary/10"
-        )}
-      >
-        Add Country
-      </button>
+            !categoryId ? "bg-primary/25" : "bg-primary/10"
+          )}
+        >
+          Add Country
+        </button>
+      </Link>
       {data.map((item) => (
         <button
           onClick={() => onClick(item.id)}
