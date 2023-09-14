@@ -3,7 +3,13 @@ import LoginModal from '@components/navbar/modals/LoginModal'
 import ToastProvider from '@components/provider/ToastProvider'
 
 import './globals.css'
+import { Inter } from 'next/font/google'
+
+const inter = Inter({ subsets: ['latin'] })
+
+import './globals.css'
 import { Sidebar } from '@components/Sidebar'
+import { cn } from '@lib/utils'
 
 
 export const metadata = {
@@ -18,7 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className=''>
+      <body className={cn("bg-secondary",inter.className)}>
         <div className='main'>
           <div className='gradient'></div>
         </div>
@@ -38,3 +44,4 @@ export default function RootLayout({
     </html>
   )
 }
+
