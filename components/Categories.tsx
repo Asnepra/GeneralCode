@@ -54,7 +54,7 @@ export const Categories = ({ data }: CategoriesProps) => {
             !categoryId ? "bg-primary/25" : "bg-primary/10"
           )}
         >
-          Add Country
+          Add/Modify Country
         </button>
       </Link>
       {data.map((item) => (
