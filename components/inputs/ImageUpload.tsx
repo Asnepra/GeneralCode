@@ -1,55 +1,87 @@
-'use client'
+import Image from "next/image";
+import React, { useState, useRef, useEffect, ChangeEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { ImageIcon, X } from "lucide-react";
 
-
-import { CldUploadWidget } from 'next-cloudinary';
-import Image from 'next/image';
-import React, { useCallback } from 'react'
-import { TbPhotoPlus } from 'react-icons/tb';
-
-//Declaring some global variables
-declare global{
-    var cloudinary:any;
+interface ImageUploadProps {
+  value: string;
+  onChange: (src: string | Blob | null) => void;
+  disabled?: boolean;
 }
 
-//Interface for ImageUpload Props
-interface ImageUploadProps{
-    onChange:(value:string)=> void;
-    value:string;
-}
-const ImageUpload:React.FC<ImageUploadProps> = ({
-    value,
-    onChange
-}) => {
+const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
+  const [isMounted, setIsMounted] = useState(false);
 
-    //Function for successful upload
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-    const handleUpload = useCallback((result:any)=>{
-        //call onChange and pass the result to
-        onChange(result.info.secure_url);
-    },[onChange]);
+  const [selectedFile, setSelectedFile] = useState<string | Blob | null>(
+    value || null
+  );
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileChange = () => {
+    // Trigger the file input dialog
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      onChange(URL.createObjectURL(file)); // Pass the URL of the selected file
+    }
+  };
+
   return (
-    <CldUploadWidget onUpload={handleUpload} uploadPreset='cri95fxr' options={{maxFiles:1}}>
-        {({open})=>{
-            return (
-                <div className='relative cursor-pointer hover:opacity-70 tranistion border-dashed border-2 p-20 border-neutral-200 flex flex-col justify-center items-center gap-2 md:gap-4 text-neutral-500' onClick={ ()=>open?.()}>
-                    <TbPhotoPlus size={50}/>
-                    <div className='font-semibold text-lg'>Click to Upload</div>
+    <div className="space-y-4 w-full flex flex-col justify-center items-center">
+      {/* Use a button to trigger the file input */}
 
-                    {/** Conditional Div */}
-                    {value &&(
-                        <div className='absolute inset-0 h-full w-full'>
-                            <Image alt="Uploading..."
-                            fill style={{objectFit:'cover'}}
-                            src={value}/>
+      <div
+        onClick={handleFileChange}
+        className="
+            p-2 
+            border-4 
+            border-dashed
+            border-primary/10 
+            rounded-lg 
+            hover:opacity-75 
+            transition 
+            flex 
+            flex-col 
+            space-y-2 
+            items-center 
+            justify-center
+          "
+      >
+        <div className="relative h-40 w-40">
+          <Image
+            fill
+            alt="Upload"
+            src={
+              selectedFile
+                ? URL.createObjectURL(selectedFile)
+                : "/placeholder.svg"
+            }
+            className="rounded-lg object-contain"
+          />
+        </div>
+      </div>
 
-                        </div>
-                    )}
+      {/* Hidden file input */}
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileInputChange}
+        style={{ display: "none" }}
+        ref={fileInputRef}
+      />
+    </div>
+  );
+};
 
-                </div>
-            )
-        }}
-    </CldUploadWidget>
-  ) 
-}
-
-export default ImageUpload
+export default ImageUpload;

@@ -7,17 +7,17 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 interface CategoriesProps {
-  data: { id: number; COUNTRY_NAME: string }[];
+  data: { id: number; country_name: string }[];
 }
 
 export const Categories = ({ data }: CategoriesProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const categoryId = searchParams.get("categoryId");
+  const countryId = searchParams.get("countryId");
 
   const onClick = (id: string | undefined) => {
-    const query = { categoryId: id };
+    const query = { countryId: id };
 
     const url = qs.stringifyUrl(
       {
@@ -51,7 +51,7 @@ export const Categories = ({ data }: CategoriesProps) => {
           hover:opacity-75 
           transition
         `,
-            !categoryId ? "bg-primary/25" : "bg-primary/10"
+            !countryId ? "bg-primary/25" : "bg-primary/10"
           )}
         >
           Add/Modify Country
@@ -76,11 +76,11 @@ export const Categories = ({ data }: CategoriesProps) => {
             hover:opacity-75 
             transition
           `,
-            item.id === categoryId ? "bg-primary/25" : "bg-primary/10"
+            item.id === countryId ? "bg-primary/25" : "bg-primary/10"
           )}
           key={item.id}
         >
-          {item.COUNTRY_NAME}
+          {item.country_name}
         </button>
       ))}
     </div>

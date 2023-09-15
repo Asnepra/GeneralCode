@@ -31,8 +31,7 @@ const AddCountryRootPage = async ({ params }: AddCountryRootPageProps) => {
   //Since this is going to fetch the country Master data, check if countryId exist or not
   return (
     <div className="h-full p-4 pl-24 space-y-2">
-      Add country {params.countryId}
-      <CountryForm />
+      <CountryForm data={countryCategories} />
     </div>
   );
 };
