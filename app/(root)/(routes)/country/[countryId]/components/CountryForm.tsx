@@ -105,8 +105,11 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {data.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
+                      {data?.map((category) => (
+                        <SelectItem
+                          key={category.id}
+                          value={category.id.toString()}
+                        >
                           {category.country_name}
                         </SelectItem>
                       ))}
