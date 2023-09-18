@@ -94,7 +94,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <div className="space-y-2 w-full col-span-2">
                 <div>
-                  <h3 className="text-lg font-medium">To Modify Country</h3>
+                  <h3 className="text-lg font-medium">Modify Country</h3>
                 </div>
               </div>
             </form>
