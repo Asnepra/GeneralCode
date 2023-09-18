@@ -43,26 +43,30 @@ export const POST = async (req: Request,{ params }: { params: Iparams }, res: Re
       try {
         // Connect to the MongoDB database
         await mssqlconnect();
-        const fileId = params.countryId; // Extract the file ID from the query parameters
+        //const fileId = params.countryId; // Extract the file ID from the query parameters
   
         // Implement your specific logic to update the file by ID
         // For example, update the file's content in the database
         const body = await req.json(); // Assuming the updated data is in the request body
         
            const {
-            FileId,
-            Title,
-            VersionNumber,
-            Data,
-            CreatedAt,
+            country_name,
+            country_flag_location,
+            country_map_location,
           } = body;
-          console.log(fileId, Title, VersionNumber, Data);
+          const country_updated_by=1;
+          const country_added_by=1;
+          if(country_name===undefined || country_flag_location ===  undefined || country_map_location === undefined){
+            console.log("Incorrect Post Data");
+            return new NextResponse("Post Data Incorrect", { status: 400, headers: { 'Content-Type': 'application/json' } });
+          }
+          console.log(country_name, country_flag_location, country_map_location);
           //post the data into the sql db
           // Execute an INSERT INTO query to add data to the SQL table
           await sql.query`
-          INSERT INTO dbo.CountryData (Fileid, Title, VersionNumber, Data)
-          VALUES (${fileId}, ${Title}, ${VersionNumber}, ${Data});
-        `;        
+          INSERT INTO dbo.Country_Master (COUNTRY_NAME, COUNTRY_FLAG_LOCATION, COUNTRY_MAP_LOCATION, COUNTRY_ADDED_BY,COUNTRY_UPDATED_BY)
+          VALUES (${country_name}, ${country_flag_location}, ${country_map_location},${country_added_by}, ${country_updated_by});
+        `;       
      
   return new NextResponse("Post Data Added Succefully", { status: 200, headers: { 'Content-Type': 'application/json' } });
         
