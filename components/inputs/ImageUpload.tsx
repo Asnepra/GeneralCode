@@ -1,11 +1,9 @@
 import Image from "next/image";
 import React, { useState, useRef, useEffect, ChangeEvent } from "react";
-import { Button } from "@/components/ui/button";
-import { ImageIcon, X } from "lucide-react";
 
 interface ImageUploadProps {
-  value: string;
-  onChange: (src: string | Blob | null) => void;
+  value: File | null; // Change the value prop to accept a single file or null
+  onChange: (file: File | null) => void;
   disabled?: boolean;
 }
 
@@ -16,9 +14,7 @@ const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
     setIsMounted(true);
   }, []);
 
-  const [selectedFile, setSelectedFile] = useState<string | Blob | null>(
-    value || null
-  );
+  const [selectedFile, setSelectedFile] = useState<File | null>(value || null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -30,11 +26,10 @@ const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
   };
 
   const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      onChange(URL.createObjectURL(file)); // Pass the URL of the selected file
-    }
+    const newFile = e.target.files?.[0] || null;
+
+    setSelectedFile(newFile);
+    onChange(newFile); // Pass the selected file or null to the parent
   };
 
   return (
@@ -59,16 +54,23 @@ const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
           "
       >
         <div className="relative h-40 w-40">
-          <Image
-            fill
-            alt="Upload"
-            src={
-              selectedFile
-                ? URL.createObjectURL(selectedFile)
-                : "/placeholder.svg"
-            }
-            className="rounded-lg object-contain"
-          />
+          {selectedFile ? (
+            // Display the selected image
+            <Image
+              fill
+              alt="Upload"
+              src={URL.createObjectURL(selectedFile)}
+              className="rounded-lg object-contain"
+            />
+          ) : (
+            // Display a placeholder image
+            <Image
+              fill
+              alt="Upload"
+              src="/placeholder.svg"
+              className="rounded-lg object-contain"
+            />
+          )}
         </div>
       </div>
 

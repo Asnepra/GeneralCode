@@ -56,6 +56,8 @@ export const POST = async (req: Request,{ params }: { params: Iparams }, res: Re
           } = body;
           const country_updated_by=1;
           const country_added_by=1;
+          //Here the country_flag_location and country_map_location from client side contains the data as image
+          
           if(country_name===undefined || country_flag_location ===  undefined || country_map_location === undefined){
             console.log("Incorrect Post Data");
             return new NextResponse("Post Data Incorrect", { status: 400, headers: { 'Content-Type': 'application/json' } });
