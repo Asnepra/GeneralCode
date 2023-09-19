@@ -111,19 +111,24 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
     } else {
       console.log("Category ID is not selected.");
       console.log("Post data -----\n", postCountryData);
-      // axios
-      //   .post(`/api/country_category/add`, postCountryData)
-      //   .then((response) => {
-      //     console.log("Added to backedn\n");
-      //     console.log(postCountryData);
-      //     console.log(response);
-      //     const router = useRouter();
-      //     router.refresh();
-      //     router.push("/");
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error posting data:", error);
-      //   });
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      axios
+        .post(`/api/country_category/add`, postCountryData, config)
+        .then((response) => {
+          console.log("Added to backedn\n");
+          //console.log(postCountryData);
+          //console.log(response);
+          const router = useRouter();
+          router.refresh();
+          router.push("/");
+        })
+        .catch((error) => {
+          console.error("Error posting data:", error);
+        });
     }
     //if(categoryId) selected then log categry id fromm sELECTECT ELSE LOG NOTHING
     //console.log("Submit clicked");
