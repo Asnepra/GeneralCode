@@ -19,9 +19,9 @@ export const GET = async (
     await mssqlconnect();
     let documentId = params.countryId;
     documentId = documentId.toString();
-    // if(documentId){
-    //   console.log("documentId FROM Api \n"+documentId);
-    // }
+    if (documentId) {
+      console.log("documentId FROM Api \n" + documentId);
+    }
 
     // Fetch the document by its ID from the database
     const result =
@@ -124,8 +124,8 @@ export const POST = async (
     const mapFileLocation = `/uploads/countrymaster/map/${mapFileName}`;
     //console.log("Flag file lcoation ----\n " + flagFileLocation);
     await sql.query`
-    INSERT INTO dbo.Country_Master (COUNTRY_NAME, COUNTRY_FLAG_LOCATION, COUNTRY_MAP_LOCATION, COUNTRY_ADDED_BY, COUNTRY_UPDATED_BY)
-    VALUES (${countryName}, ${flagFileLocation}, ${mapFileLocation}, 1, 1)
+    INSERT INTO dbo.Country_Master (COUNTRY_NAME, COUNTRY_FLAG_LOCATION, COUNTRY_MAP_LOCATION, COUNTRY_ADDED_BY, COUNTRY_ADDED_ON, COUNTRY_UPDATED_BY,COUNTRY_UPDATED_ON)
+    VALUES (${countryName}, ${flagFileLocation}, ${mapFileLocation}, 1, GETDATE(), 1, GETDATE())
     `;
 
     return new NextResponse("Post Data Added Succefully", {
