@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +28,6 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import Link from "next/link";
-import { cn } from "@lib/utils";
 import { Separator } from "@components/ui/separator";
 import ImageUpload from "@components/inputs/ImageUpload";
 import { Input } from "@components/ui/input";
@@ -37,7 +36,7 @@ import { Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface CountryFormProps {
-  //if the country doesnt exist it returns null
+  //if the country doesn't exist it returns null
   countryId?: string | null;
   initialdata?: {
     id: number;
@@ -86,6 +85,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
 
   const isLoading = form.formState.isSubmitting;
   const [isEditMode, setIsEditMode] = useState(false); // Track whether we're in edit mode
+  const [selectedCountry, setSelectedCountry] = useState<number | null>(null); // Store the selected country ID
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     var postCountryData = {
@@ -129,18 +129,35 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
     // This function will be called when a country is selected or changed
     console.log("Selected Country ID:", selectedId);
     setIsEditMode(true); // Enter edit mode when a country is selected
+    setSelectedCountry(parseInt(selectedId)); // Store the selected country ID as a number
     // ... (your additional actions here if needed)
-    axios
-      .get(`/api/country_category/${selectedId}`)
-      .then((response) => {
-        console.log("Added to backend\n");
-        console.log(response);
-        // ... (your redirect logic here)
-      })
-      .catch((error) => {
-        console.error("Error posting data:", error);
-      });
   };
+
+  // Fetch data when the component is mounted or selectedCountry changes
+  useEffect(() => {
+    if (selectedCountry !== null) {
+      axios
+        .get(`/api/country_category/${selectedCountry}`)
+        .then((response) => {
+          console.log(response);
+          // Populate the form fields with the fetched data
+          const countryData = response.data;
+          form.setValue("country_id", countryData.Country_Id.toString());
+          form.setValue("country_name", countryData.COUNTRY_NAME);
+          form.setValue(
+            "country_flag_location",
+            countryData.COUNTRY_FLAG_LOCATION
+          );
+          form.setValue(
+            "country_map_location",
+            countryData.COUNTRY_MAP_LOCATION
+          );
+        })
+        .catch((error) => {
+          console.error("Error posting data:", error);
+        });
+    }
+  }, [selectedCountry]);
 
   const [isOpen, setIsOpen] = React.useState(false);
   return (

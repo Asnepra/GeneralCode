@@ -2,8 +2,8 @@ import Image from "next/image";
 import React, { useState, useRef, useEffect, ChangeEvent } from "react";
 
 interface ImageUploadProps {
-  value: File | null; // Change the value prop to accept a single file or null
-  onChange: (file: File | null) => void;
+  value: File | string | null; // Change the value prop to accept a single file or null
+  onChange: (file: string | File | string | null) => void;
   disabled?: boolean;
 }
 
@@ -14,7 +14,9 @@ const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
     setIsMounted(true);
   }, []);
 
-  const [selectedFile, setSelectedFile] = useState<File | null>(value || null);
+  const [selectedFile, setSelectedFile] = useState<File | string | null>(
+    value || null
+  );
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -67,7 +69,7 @@ const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
             <Image
               fill
               alt="Upload"
-              src="/placeholder.svg"
+              src={value || "/placeholder.svg"}
               className="rounded-lg object-contain"
             />
           )}

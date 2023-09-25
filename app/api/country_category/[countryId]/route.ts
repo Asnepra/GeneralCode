@@ -36,7 +36,7 @@ export const GET = async (
 
     // Get the country details
     const countryDetails = result.recordset[0];
-    console.log("Country details\n", countryDetails);
+    //console.log("Country details\n", countryDetails);
 
     // Construct image URLs based on your server's URL
     const serverUrl = "http://localhost:3000"; // Replace with your actual server URL
@@ -53,6 +53,7 @@ export const GET = async (
       COUNTRY_FLAG_LOCATION: flagImageUrl,
       COUNTRY_MAP_LOCATION: mapImageUrl,
     };
+    console.log("Api route GET request \n", countryDataWithImages);
 
     // Send the JSON response with image URLs
     return new NextResponse(JSON.stringify(countryDataWithImages), {
