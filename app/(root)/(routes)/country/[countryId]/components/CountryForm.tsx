@@ -50,7 +50,7 @@ interface CountryFormProps {
   data?: { id: number; country_name: string }[];
 }
 
-const MAX_FILE_SIZE = 500000; //5 MB
+const MAX_FILE_SIZE = 500000; // 5 MB
 
 const formSchema = z.object({
   country_id: z
@@ -73,6 +73,7 @@ const formSchema = z.object({
       message: "Image is required.",
     }),
 });
+
 const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,6 +85,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
   });
 
   const isLoading = form.formState.isSubmitting;
+  const [isEditMode, setIsEditMode] = useState(false); // Track whether we're in edit mode
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     var postCountryData = {
@@ -91,23 +93,12 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
       country_flag_location: values.country_flag_location,
       country_map_location: values.country_map_location,
     };
+
     // Check if categoryId is selected
     if (values.country_id) {
       console.log("Selected Category ID:", values.country_id);
       console.log(postCountryData);
-      // axios
-      //   .patch(`/api/country_category/${values.country_id}`, postCountryData)
-      //   .then((response) => {
-      //     console.log("Added to backedn\n");
-      //     console.log(postCountryData);
-      //     console.log(response);
-      //     const router = useRouter();
-      //     router.refresh();
-      //     router.push("/");
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error posting data:", error);
-      //   });
+      // ... (your update logic here)
     } else {
       console.log("Category ID is not selected.");
       console.log("Post data -----\n", postCountryData);
@@ -119,25 +110,36 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
       axios
         .post(`/api/country_category/add`, postCountryData, config)
         .then((response) => {
-          console.log("Added to backedn\n");
-          //console.log(postCountryData);
-          //console.log(response);
-          const router = useRouter();
-          router.refresh();
-          router.push("/");
+          console.log("Added to backend\n");
+          // ... (your redirect logic here)
         })
         .catch((error) => {
           console.error("Error posting data:", error);
         });
     }
-    //if(categoryId) selected then log categry id fromm sELECTECT ELSE LOG NOTHING
-    //console.log("Submit clicked");
-    //console.log(values);
   };
 
   const handleResetList = () => {
     // Reset the selected country to null
     form.setValue("country_id", "");
+    setIsEditMode(false); // Exit edit mode
+  };
+
+  const handleCountrySelect = (selectedId: string) => {
+    // This function will be called when a country is selected or changed
+    console.log("Selected Country ID:", selectedId);
+    setIsEditMode(true); // Enter edit mode when a country is selected
+    // ... (your additional actions here if needed)
+    axios
+      .get(`/api/country_category/${selectedId}`)
+      .then((response) => {
+        console.log("Added to backend\n");
+        console.log(response);
+        // ... (your redirect logic here)
+      })
+      .catch((error) => {
+        console.error("Error posting data:", error);
+      });
   };
 
   const [isOpen, setIsOpen] = React.useState(false);
@@ -160,9 +162,9 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm">
                   {isOpen ? (
-                    <ChevronUp className="h-6 w-6" /> // Displaying ChevronUp when the collapsible is open
+                    <ChevronUp className="h-6 w-6" />
                   ) : (
-                    <ChevronDown className="h-6 w-6" /> // Displaying ChevronDown when the collapsible is closed
+                    <ChevronDown className="h-6 w-6" />
                   )}
                   <span className="sr-only">Toggle</span>
                 </Button>
@@ -184,7 +186,10 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
                       <div className="">
                         <Select
                           disabled={isLoading}
-                          onValueChange={field.onChange}
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleCountrySelect(value);
+                          }}
                           value={field.value}
                           defaultValue={field.value}
                         >
@@ -227,9 +232,12 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
 
           <div className="space-y-2 w-full col-span-2">
             <div>
-              <h3 className="text-lg font-medium">Add Country</h3>
+              <h3 className="text-lg font-medium">
+                {isEditMode ? "Edit Country" : "Add Country"}
+              </h3>
               <p className="text-sm text-muted-foreground">
-                Add Country and country details
+                {isEditMode ? "Edit Country" : "Add Country"} and country
+                details
               </p>
             </div>
             <Separator className="bg-primary/10" />
@@ -287,7 +295,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
               />
               <div className="w-full mt-8 flex justify-center">
                 <Button size="default" type="submit" disabled={isLoading}>
-                  {initialdata ? "Edit Country" : "Add Country"}
+                  {isEditMode ? "Edit Country" : "Add Country"}
 
                   <Wand2 className="w-4 h-4 ml-2" />
                 </Button>

@@ -2,7 +2,10 @@ import mssqlconnect from "@lib/mssqlconnect";
 import { NextRequest, NextResponse } from "next/server";
 const sql = require("mssql");
 import path from "path";
-import { writeFile } from "fs/promises";
+import { writeFile, readFile } from "fs/promises";
+import { access, constants as fsConstants } from "fs/promises";
+import fs from "fs";
+
 // Connect to the MongoDB database
 
 interface Iparams {
@@ -26,20 +29,39 @@ export const GET = async (
     // Fetch the document by its ID from the database
     const result =
       await sql.query`SELECT * FROM Country_Master WHERE Country_Id = ${documentId}`;
-    //console.log(result);
+
     if (!result || result.recordset.length === 0) {
-      return new NextResponse("Country_Id doesn't exist", { status: 404 }); // Return 404 if the document is not found
+      return new NextResponse("Country_Id doesn't exist", { status: 404 });
     }
 
-    // Send the JSON response with status code 200
-    //console.log("Api get request data \n"+result);
-    return new NextResponse(JSON.stringify(result.recordset), {
+    // Get the country details
+    const countryDetails = result.recordset[0];
+    console.log("Country details\n", countryDetails);
+
+    // Construct image URLs based on your server's URL
+    const serverUrl = "http://localhost:3000"; // Replace with your actual server URL
+    const flagImageUrl = `${serverUrl}/uploads/countrymaster/flag/${path.basename(
+      countryDetails.COUNTRY_FLAG_LOCATION
+    )}`;
+    const mapImageUrl = `${serverUrl}/uploads/countrymaster/map/${path.basename(
+      countryDetails.COUNTRY_MAP_LOCATION
+    )}`;
+
+    // Include image URLs in the JSON response
+    const countryDataWithImages = {
+      ...countryDetails,
+      COUNTRY_FLAG_LOCATION: flagImageUrl,
+      COUNTRY_MAP_LOCATION: mapImageUrl,
+    };
+
+    // Send the JSON response with image URLs
+    return new NextResponse(JSON.stringify(countryDataWithImages), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error fetching most updated document version:", error);
-    return new NextResponse("IN Api Calling error internal Error", {
+    console.error("Error fetching country details:", error);
+    return new NextResponse("Internal Server Error", {
       status: 500,
     });
   }
@@ -56,8 +78,12 @@ export const POST = async (
     const formData = await req.formData();
     console.log("Form data", formData);
     const countryName = formData.get("country_name");
-    const countryFlagImage = formData.get("country_flag_location");
-    const countryMapImage = formData.get("country_map_location");
+    const countryFlagImage: File | null = formData.get(
+      "country_flag_location"
+    ) as unknown as File;
+    const countryMapImage: File | null = formData.get(
+      "country_map_location"
+    ) as unknown as File;
     const file = formData.get("country_flag_location");
     if (!countryFlagImage || !countryMapImage) {
       return NextResponse.json(
