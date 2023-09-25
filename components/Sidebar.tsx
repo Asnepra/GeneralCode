@@ -11,33 +11,30 @@ interface SidebarProps {
   isPro?: boolean;
 }
 
-export const Sidebar = ({
-  isPro
-}: SidebarProps) => {
-
+export const Sidebar = ({ isPro }: SidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  const onNavigate = (url: string, pro:boolean) =>{
+  const onNavigate = (url: string, pro: boolean) => {
     //TODO: Check if user is logged in or not using pro
     return router.push(url);
-  }
+  };
 
   const routes = [
     {
       icon: Home,
-      href: '/',
+      href: "/",
       label: "Home",
       pro: false,
     },
     {
       icon: Plus,
-      href: '/new',
+      href: "/create",
       label: "Create",
       pro: true,
     },
     {
       icon: Settings,
-      href: '/settings',
+      href: "/settings",
       label: "Settings",
       pro: false,
     },
@@ -53,7 +50,7 @@ export const Sidebar = ({
               key={route.href}
               className={cn(
                 "text-muted-foreground text-xs group flex p-3 w-full justify-start font-medium cursor-pointer hover:text-primary hover:bg-primary/10 rounded-lg transition",
-                pathname === route.href && "bg-primary/10 text-primary",
+                pathname === route.href && "bg-primary/10 text-primary"
               )}
             >
               <div className="flex flex-col gap-y-2 items-center flex-1">
