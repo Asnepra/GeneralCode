@@ -57,20 +57,34 @@ const formSchema = z.object({
     .min(0, {
       message: "Id is optional.",
     })
-    .optional(),
+    .default(""),
   country_name: z.string().min(1, {
     message: "Name is required.",
   }),
-  country_flag_location: z
-    .any()
-    .refine((file) => file instanceof File && file.size <= MAX_FILE_SIZE, {
-      message: "Image is required.",
-    }),
-  country_map_location: z
-    .any()
-    .refine((file) => file instanceof File && file.size <= MAX_FILE_SIZE, {
-      message: "Image is required.",
-    }),
+  country_flag_location: z.any().refine(
+    (value) => {
+      // Allow either a File object or a string (URL)
+      return (
+        value instanceof File ||
+        (typeof value === "string" && value.startsWith("http"))
+      );
+    },
+    {
+      message: "Image is required and should be either a file or a URL.",
+    }
+  ),
+  country_map_location: z.any().refine(
+    (value) => {
+      // Allow either a File object or a string (URL)
+      return (
+        value instanceof File ||
+        (typeof value === "string" && value.startsWith("http"))
+      );
+    },
+    {
+      message: "Image is required and should be either a file or a URL.",
+    }
+  ),
 });
 
 const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
@@ -93,20 +107,35 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
       country_flag_location: values.country_flag_location,
       country_map_location: values.country_map_location,
     };
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
 
     // Check if categoryId is selected
     if (values.country_id) {
-      console.log("Selected Category ID:", values.country_id);
-      console.log(postCountryData);
-      // ... (your update logic here)
+      var patchCountryData = {
+        country_id: values.country_id,
+        country_name: values.country_name,
+        country_flag_location: values.country_flag_location,
+        country_map_location: values.country_map_location,
+      };
+      console.log("Selected Category ID: calling patch", values.country_id);
+      //console.log(postCountryData);
+      axios
+        .patch(`/api/country_category/add`, patchCountryData, config)
+        .then((response) => {
+          console.log("Added to backend\n");
+          // ... (your redirect logic here)
+        })
+        .catch((error) => {
+          console.error("Error posting data:", error);
+        });
     } else {
       console.log("Category ID is not selected.");
       console.log("Post data -----\n", postCountryData);
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
+
       axios
         .post(`/api/country_category/add`, postCountryData, config)
         .then((response) => {
@@ -169,14 +198,14 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
             onOpenChange={setIsOpen}
             className="h-full space-y-2 max-w-3xl mx-auto"
           >
-            <div className="flex items-center justify-between space-x-4">
-              <div className="space-y-2 w-full col-span-2">
-                <div>
-                  <h3 className="text-lg font-medium">Modify Country</h3>
+            <CollapsibleTrigger asChild>
+              <div className="flex items-center justify-between space-x-4">
+                <div className="space-y-2 w-full col-span-2">
+                  <div>
+                    <h3 className="text-lg font-medium">Modify Country</h3>
+                  </div>
                 </div>
-              </div>
 
-              <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm">
                   {isOpen ? (
                     <ChevronUp className="h-6 w-6" />
@@ -185,8 +214,8 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
                   )}
                   <span className="sr-only">Toggle</span>
                 </Button>
-              </CollapsibleTrigger>
-            </div>
+              </div>
+            </CollapsibleTrigger>
 
             <CollapsibleContent className="space-y-2">
               <p className="text-sm text-muted-foreground">
