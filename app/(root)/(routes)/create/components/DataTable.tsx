@@ -1,15 +1,17 @@
 "use client";
-import React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Input } from "@components/ui/input";
+
+import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -19,8 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import React, { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -31,40 +32,33 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: setColumnFilters,
-    onRowSelectionChange: setRowSelection,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       columnFilters,
-      rowSelection,
     },
   });
 
   return (
-    <div>
+    <div className="backdrop-blur-lg hover:backdrop-blur-xl">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter Template Name..."
-          value={
-            (table.getColumn("template_name")?.getFilterValue() as string) ?? ""
-          }
+          placeholder="Filter emails..."
+          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("template_name")?.setFilterValue(event.target.value)
+            table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-md"
         />
       </div>
-      <div className="backdrop-blur-md bg-transparent/5 rounded-md border">
+
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -113,36 +107,6 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      {/**pagination */}
-      <div className="flex items-center justify-right space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            table.previousPage();
-          }}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <ArrowLeft size={16} />
-          <span className="mx-3">Previous</span>
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            table.nextPage();
-          }}
-          disabled={!table.getCanNextPage()}
-        >
-          <span className="mx-3">Next</span>
-          <ArrowRight size={16} />
-        </Button>
       </div>
     </div>
   );

@@ -88,16 +88,6 @@ const CountrySelect = ({ countryId, data }: CountrySelectProps) => {
     } else {
       console.log("Category ID is not selected.");
       console.log("Post data -----\n", postCountryData);
-
-      axios
-        .post(`/api/country_category/add`, postCountryData, config)
-        .then((response) => {
-          console.log("Added to backend\n");
-          // ... (your redirect logic here)
-        })
-        .catch((error) => {
-          console.error("Error posting data:", error);
-        });
     }
   };
 
@@ -135,15 +125,9 @@ const CountrySelect = ({ countryId, data }: CountrySelectProps) => {
 
   const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <div className="h-full p-2 space-y-2 max-w-3xl mx-auto">
+    <div className="h-full max-w-3xl">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="my-2 flex items-center justify-between space-x-4">
-            <p className="text-sm text-muted-foreground">
-              Select a country to modify the details
-            </p>
-          </div>
-          <Separator className="bg-primary/10" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -165,15 +149,15 @@ const CountrySelect = ({ countryId, data }: CountrySelectProps) => {
                         <SelectTrigger className="bg-background">
                           <SelectValue
                             defaultValue={field.value}
-                            placeholder="Select country to modify country details..."
+                            placeholder="Select country..."
                           />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {data?.map((category) => (
                           <SelectItem
-                            key={category.id}
-                            value={category.id.toString()}
+                            key={category.country_id}
+                            value={category.country_name}
                           >
                             {category.country_name}
                           </SelectItem>
