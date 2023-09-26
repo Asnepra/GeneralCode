@@ -9,7 +9,6 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Input } from "@components/ui/input";
 
 import {
   Table,
@@ -19,8 +18,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Label } from "@components/ui/label";
+import { ArrowLeft, ArrowRight, PlusSquare } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -63,9 +74,41 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <div className="flex-grow"></div>{" "}
+        <div className="flex-grow"></div>
         {/* This creates space between the input and button */}
-        <Button> Add Template</Button>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="default">
+              {" "}
+              <PlusSquare size={16} />
+              <span className="mx-3">Add Template</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Add Template</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you're done.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="name" className="text-right">
+                  Template Name
+                </Label>
+                <Input
+                  id="name"
+                  placeholder="Template 4"
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit">Save changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="backdrop-blur-md bg-transparent/5 rounded-md border">
