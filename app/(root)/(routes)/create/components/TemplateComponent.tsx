@@ -51,8 +51,8 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div>
-      <div className="flex items-center py-4">
+    <div className="">
+      <div className="flex items-center py-4 space-x-2">
         <Input
           placeholder="Filter Template Name..."
           value={
@@ -63,7 +63,11 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <div className="flex-grow"></div>{" "}
+        {/* This creates space between the input and button */}
+        <Button> Add Template</Button>
       </div>
+
       <div className="backdrop-blur-md bg-transparent/5 rounded-md border">
         <Table>
           <TableHeader>
