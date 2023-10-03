@@ -32,10 +32,6 @@ export const columns: ColumnDef<TemplateMasterContent>[] = [
     ),
   },
   {
-    accessorKey: "id",
-    header: "Template Id",
-  },
-  {
     accessorKey: "template_name",
     header: "Template Name",
   },

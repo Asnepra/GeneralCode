@@ -41,11 +41,11 @@ export const POST = async (req: Request, res: Response) => {
     await mssqlconnect();
     const formData = await req.json();
     console.log("Form data", formData);
-    const templateName = formData.get("templatename");
-    console.log("Temoplate name lcoation ----\n " + templateName);
-    // await sql.query`
-    // INSERT INTO dbo.Template_Master (TEMPLATE_NAME, CREATED_BY, CREATED_ON, TEMPLATE_IS_ACTIVE
-    // VALUES (${templateName}, 2, GETDATE(), 1)`;
+    const templateName = formData.templatename;
+    console.log("Temoplate name ----\n " + templateName);
+    await sql.query`
+    INSERT INTO dbo.Template_Master (TEMPLATE_NAME, CREATED_BY, CREATED_ON, TEMPLATE_IS_ACTIVE)
+    VALUES (${templateName}, 2, GETDATE(), 1)`;
 
     return new NextResponse("Template Added Succefully", {
       status: 200,

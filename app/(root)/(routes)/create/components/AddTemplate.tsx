@@ -173,6 +173,8 @@ const AddTemplate = () => {
         toast.success("Added to backend template");
         // ... (your redirect logic here)
         router.push("/create");
+        router.refresh();
+        window.location.reload(); // Reload the page
       })
       .catch((error) => {
         console.error("Error posting data:", error);
@@ -210,14 +212,19 @@ const AddTemplate = () => {
                           </Label>
                           <Input
                             {...field}
-                            id="name"
+                            id="templatename"
                             placeholder="Template 4"
                             className="col-span-3"
                           />
                         </div>
                       </div>
                       <DialogFooter>
-                        <Button type="submit">Save changes</Button>
+                        <Button
+                          type="submit"
+                          onClick={form.handleSubmit(onSubmit)}
+                        >
+                          Save changes
+                        </Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
