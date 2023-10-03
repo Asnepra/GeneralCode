@@ -55,7 +55,7 @@ export function DataTable<TData, TValue>({
   );
   const [rowSelection, setRowSelection] = React.useState({});
   const [countryCategories, setCountryCategories] = useState([]);
-  const [countrySelected, setCountrySelected] = useState(""); // Use useState hook to manage countrySelected state
+  const [countrySelected, setCountrySelected] = useState(-1); // Use useState hook to manage countrySelected state
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({
       .getFilteredSelectedRowModel()
       .rows.map((row) => row.original.id);
 
-    if (countrySelected === "") {
+    if (countrySelected === -1) {
       toast.error("Select country First");
     } else if (selectedTemplates.length === 0) {
       toast.error("Select at least 1 Template");
@@ -75,15 +75,14 @@ export function DataTable<TData, TValue>({
         currentQuery = qs.parse(params.toString());
       }
 
-      const updatedQuery: any = {
+      const updatedQuery = {
         ...currentQuery,
         countrySelected,
-        selectedTemplates,
+        selectedTemplates: selectedTemplates.join(","), // Join templates into a comma-separated string
       };
-      const url = qs.stringifyUrl({
-        url: "/createProfile", // Ensure the pathname starts with a forward slash "/"
-        query: updatedQuery,
-      });
+
+      const updatedQueryString = qs.stringify(updatedQuery);
+      const url = `/createProfile?${updatedQueryString}`;
       console.log("url \n", url);
       router.push(url);
     }
@@ -91,7 +90,7 @@ export function DataTable<TData, TValue>({
 
   const handleResetList = () => {};
 
-  const handleCountrySelect = (selectedCountry: string) => {
+  const handleCountrySelect = (selectedCountry: number) => {
     // This function will be called when a country is selected or changed
     console.log("Selected Country ID:", selectedCountry);
     setCountrySelected(selectedCountry);
@@ -129,6 +128,7 @@ export function DataTable<TData, TValue>({
               <SelectItem
                 key={category.country_id}
                 value={category.country_name}
+                onSelect={() => handleCountrySelect(category.country_id)} // Pass country_id here
               >
                 {category.country_name}
               </SelectItem>
