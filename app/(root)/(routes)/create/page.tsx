@@ -39,15 +39,16 @@ const CreateFile = () => {
   }, []);
 
   return (
-    <div className="pl-24 h-full space-y-4 max-w-4xl">
-      <CountrySelect data={countryCategories} />
-      <Separator className="bg-primary/10" />
-
+    <div className="pl-24 h-full space-y-2 max-w-4xl">
       {/* Conditional rendering based on isLoading */}
       {isLoading ? (
         <p>Loading Templates... </p> // Display loading indicator
       ) : (
-        <DataTable columns={columns} data={templateCategories} />
+        <DataTable
+          columns={columns}
+          data={templateCategories}
+          countryData={countryCategories}
+        />
       )}
     </div>
   );

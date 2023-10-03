@@ -30,16 +30,16 @@ import { Button } from "@components/ui/button";
 interface CountrySelectProps {
   //if the country doesn't exist it returns null
   countryId?: string | null;
-  data?: { country_id: number; country_name: string }[];
+  data: { country_id: number; country_name: string }[];
 }
 
 const formSchema = z.object({
   country_id: z
-    .string()
+    .number()
     .min(0, {
-      message: "Id is optional.",
+      message: "Id is required.",
     })
-    .default(""),
+    .default(0),
   country_name: z.string().min(1, {
     message: "Name is required.",
   }),
@@ -48,82 +48,34 @@ const formSchema = z.object({
 const CountrySelect = ({ countryId, data }: CountrySelectProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: data || {
-      country_id: 1,
-      country_name: "",
-    },
+    defaultValues:
+      data && data.length > 0 ? data[0] : { country_id: -1, country_name: "" }, // Set the default value based on the data
   });
 
   const isLoading = form.formState.isSubmitting;
-  const [isEditMode, setIsEditMode] = useState(false); // Track whether we're in edit mode
-  const [selectedCountry, setSelectedCountry] = useState<number | null>(null); // Store the selected country ID
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     var postCountryData = {
+      country_id: values.country_id,
       country_name: values.country_name,
     };
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
 
-    // Check if categoryId is selected
-    if (values.country_id) {
-      var patchCountryData = {
-        country_id: values.country_id,
-        country_name: values.country_name,
-      };
-      console.log("Selected Category ID: calling patch", values.country_id);
-      //console.log(postCountryData);
-      axios
-        .patch(`/api/country_category/add`, patchCountryData, config)
-        .then((response) => {
-          console.log("Added to backend\n");
-          // ... (your redirect logic here)
-        })
-        .catch((error) => {
-          console.error("Error posting data:", error);
-        });
-    } else {
-      console.log("Category ID is not selected.");
-      console.log("Post data -----\n", postCountryData);
-    }
+    console.log(postCountryData);
   };
 
   const handleResetList = () => {
     // Reset the selected country to null
-    form.setValue("country_id", "");
-    setIsEditMode(false); // Exit edit mode
+    form.setValue("country_id", -1);
+    // Exit edit mode
   };
 
-  const handleCountrySelect = (selectedId: string) => {
+  const handleCountrySelect = (selectedCountry: string) => {
     // This function will be called when a country is selected or changed
-    console.log("Selected Country ID:", selectedId);
-    setIsEditMode(true); // Enter edit mode when a country is selected
-    setSelectedCountry(parseInt(selectedId)); // Store the selected country ID as a number
+    console.log("Selected Country ID:", selectedCountry);
+    itemSelected = selectedCountry;
+    // Enter edit mode when a country is selected
     // ... (your additional actions here if needed)
   };
-
-  // Fetch data when the component is mounted or selectedCountry changes
-  useEffect(() => {
-    if (selectedCountry !== null) {
-      axios
-        .get(`/api/country_category/${selectedCountry}`)
-        .then((response) => {
-          console.log(response);
-          // Populate the form fields with the fetched data
-          const countryData = response.data;
-          form.setValue("country_id", countryData.Country_Id.toString());
-          form.setValue("country_name", countryData.COUNTRY_NAME);
-        })
-        .catch((error) => {
-          console.error("Error posting data:", error);
-        });
-    }
-  }, [selectedCountry]);
-
-  const [isOpen, setIsOpen] = React.useState(false);
   return (
     <div className="h-full max-w-3xl">
       <Form {...form}>
@@ -142,8 +94,6 @@ const CountrySelect = ({ countryId, data }: CountrySelectProps) => {
                         field.onChange(value);
                         handleCountrySelect(value);
                       }}
-                      value={field.value}
-                      defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger className="bg-background">
