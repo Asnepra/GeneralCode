@@ -2,10 +2,6 @@ import { Categories } from "@components/Categories";
 import { SearchInput } from "@components/search-input";
 import axios from "axios";
 
-/**
- *
- * @returns This is a server component that has access to DB
- */
 const RootPage = async () => {
   var countryCategories = [];
   try {
