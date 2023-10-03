@@ -32,6 +32,9 @@ import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import { ArrowLeft, ArrowRight, PlusSquare } from "lucide-react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import AddTemplate from "./AddTemplate";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -46,6 +49,7 @@ export function DataTable<TData, TValue>({
     []
   );
   const [rowSelection, setRowSelection] = React.useState({});
+  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -76,39 +80,7 @@ export function DataTable<TData, TValue>({
         />
         <div className="flex-grow"></div>
         {/* This creates space between the input and button */}
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="default">
-              {" "}
-              <PlusSquare size={16} />
-              <span className="mx-3">Add Template</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-xl">
-            <DialogHeader>
-              <DialogTitle>Add Template</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Template Name
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="Template 4"
-                  className="col-span-3"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Save changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <AddTemplate />
       </div>
 
       <div className="backdrop-blur-md bg-transparent/5 rounded-md border">
