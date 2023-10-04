@@ -19,6 +19,7 @@ const Page = () => {
     flagImageSrc: "",
     mapImageSrc: "",
   });
+  const [templateData, setTemplateData] = useState<any[]>([]); // Specify the type as `any[]` or the actual type of your template data
 
   useEffect(() => {
     if (selectedCountry) {
@@ -46,21 +47,44 @@ const Page = () => {
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
+      axios
+        .get(`http://localhost:3000/api/template_master`)
+        .then((response) => {
+          console.log("CREATE PROFILE COUNTRY DATA\n", response.data);
+          // Check if the response contains the expected properties
+          if (Array.isArray(response.data)) {
+            // Update the state with the fetched data
+            setTemplateData(response.data);
+          } else {
+            console.error("Invalid response data:", response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     }
   }, [selectedCountry]);
-  const templatesArray = selectedTemplates ? selectedTemplates.split(",") : [];
-
+  const templatesArray = selectedTemplates
+    ? selectedTemplates.split(",").map((templateId) => {
+        const template = templateData.find(
+          (template) => template.id === parseInt(templateId)
+        );
+        return template ? template.template_name : "";
+      })
+    : [];
+  console.log("Templates Array: #N" + templatesArray, templatesArray.length);
   return (
     <div className="pl-24 space-y-2 max-w-5xl justify-between">
       <CountryDetails data={countryData} />
       <Separator className="bg-slate-600" />
       <div className="">
         {templatesArray.map((template, index) => (
-          <div key={template} className="space-y-2 mx-auto h-72 ">
+          <div key={index} className="space-y-2 mx-auto h-72 ">
             <div className="flex items-center justify-between">
-              <div>Template {template}</div>
-              <div className="space-x-4 w-full ">
+              <div className="w-1/5">{template}</div> {/* 1/4 of the space */}
+              <div className="space-x-4 w-4/5">
                 {" "}
+                {/* 4/5 of the space */}
                 <EditorPage />
               </div>
             </div>
