@@ -22,13 +22,20 @@ export const GET = async (
     await mssqlconnect();
     let documentId = params.countryId;
     documentId = documentId.toString();
-    if (documentId) {
-      console.log("documentId FROM Api \n" + documentId);
-    }
+    // if (documentId) {
+    //   console.log("documentId FROM Api \n" + documentId);
+    // }
 
-    // Fetch the document by its ID from the database
-    const result =
-      await sql.query`SELECT * FROM Country_Master WHERE Country_Id = ${documentId}`;
+    const isNumeric = !isNaN(documentId);
+    //console.log("isNumeric", isNumeric);
+    var result;
+    if (isNumeric) {
+      result =
+        await sql.query`SELECT * FROM Country_Master WHERE Country_Id = ${documentId}`;
+    } else {
+      result =
+        await sql.query`SELECT * FROM Country_Master WHERE COUNTRY_NAME = ${documentId}`;
+    }
 
     if (!result || result.recordset.length === 0) {
       return new NextResponse("Country_Id doesn't exist", { status: 404 });
@@ -53,7 +60,7 @@ export const GET = async (
       COUNTRY_FLAG_LOCATION: flagImageUrl,
       COUNTRY_MAP_LOCATION: mapImageUrl,
     };
-    console.log("Api route GET request \n", countryDataWithImages);
+    //console.log("Api route GET request \n", countryDataWithImages);
 
     // Send the JSON response with image URLs
     return new NextResponse(JSON.stringify(countryDataWithImages), {
@@ -61,7 +68,7 @@ export const GET = async (
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error fetching country details:", error);
+    //console.error("Error fetching country details:", error);
     return new NextResponse("Internal Server Error", {
       status: 500,
     });
