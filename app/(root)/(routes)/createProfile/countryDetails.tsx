@@ -15,7 +15,7 @@ const CountryDetails = ({ data }: CountryDetailsProps) => {
 
   return (
     <>
-      <div className="max-w-4xl flex items-center justify-between gap-x-3 mb-8">
+      <div className="flex items-center justify-between gap-x-3 mb-8">
         <div className={"w-fit rounded-md"}>
           <Image
             className={"w-28 h-28 rounded-lg object-contain"}
