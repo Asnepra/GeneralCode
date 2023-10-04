@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     await mssqlconnect();
     //Fetch all the countries data
     const result =
-      await sql.query`SELECT * FROM Template_Master WHERE TEMPLATE_IS_ACTIVE = 1 ORDER BY TEMPLATE_NAME ASC`;
+      await sql.query`SELECT * FROM Template_Master WHERE TEMPLATE_IS_ACTIVE = 1 ORDER BY TEMPLATE_ID ASC`;
 
     // Map the result to a JSON format
     const countryData = result.recordset.map((record: any) => ({
