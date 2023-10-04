@@ -73,6 +73,23 @@ const Page = () => {
       })
     : [];
   console.log("Templates Array: #N" + templatesArray, templatesArray.length);
+
+  // State to hold editor data for each template
+  const [editorData, setEditorData] = useState({});
+
+  // Callback to update editor data for a specific template
+  const handleEditorDataChange = (index: number, data: string) => {
+    setEditorData((prevData) => ({
+      ...prevData,
+      [index]: data,
+    }));
+  };
+
+  const handleSubmit = () => {
+    // Send the collected editor data to the server or take further action
+    console.log("Editor Data:", editorData);
+  };
+
   return (
     <div className="pl-24 space-y-2 max-w-5xl justify-between">
       <CountryDetails data={countryData} />
@@ -85,7 +102,7 @@ const Page = () => {
               <div className="space-x-4 w-4/5">
                 {" "}
                 {/* 4/5 of the space */}
-                <EditorPage />
+                <EditorPage onDataChanged={handleEditorDataChange} />
               </div>
             </div>
             <Separator className="bg-slate-600" />
@@ -93,7 +110,7 @@ const Page = () => {
         ))}
       </div>
       <div className="m-2 flex justify-end">
-        <Button variant="default">
+        <Button variant="default" onClick={handleSubmit}>
           {" "}
           <Wand2 className="w-4 h-4 mx-2" />
           Create Country Profile
