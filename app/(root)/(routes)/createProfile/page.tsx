@@ -19,6 +19,8 @@ const Page = () => {
     flagImageSrc: "",
     mapImageSrc: "",
   });
+
+  const mRouter = useRouter();
   const [templateData, setTemplateData] = useState<any[]>([]); // Specify the type as `any[]` or the actual type of your template data
 
   useEffect(() => {
@@ -26,7 +28,7 @@ const Page = () => {
       axios
         .get(`http://localhost:3000/api/country_category/${selectedCountry}`)
         .then((response) => {
-          console.log("CREATE PROFILE COUNTRY DATA\n", response.data);
+          //console.log("CREATE PROFILE COUNTRY DATA\n", response.data);
           // Check if the response contains the expected properties
           if (
             response.data &&
@@ -50,7 +52,7 @@ const Page = () => {
       axios
         .get(`http://localhost:3000/api/template_master`)
         .then((response) => {
-          console.log("CREATE PROFILE COUNTRY DATA\n", response.data);
+          //console.log("CREATE PROFILE COUNTRY DATA\n", response.data);
           // Check if the response contains the expected properties
           if (Array.isArray(response.data)) {
             // Update the state with the fetched data
@@ -72,22 +74,63 @@ const Page = () => {
         return template ? template.template_name : "";
       })
     : [];
-  console.log("Templates Array: #N" + templatesArray, templatesArray.length);
+  //console.log("Templates Array: #N" + templatesArray, templatesArray.length);
 
   // State to hold editor data for each template
-  const [editorData, setEditorData] = useState({});
+  const [editorData, setEditorData] = useState(
+    Array(templatesArray.length).fill("")
+  );
 
   // Callback to update editor data for a specific template
   const handleEditorDataChange = (index: number, data: string) => {
-    setEditorData((prevData) => ({
-      ...prevData,
-      [index]: data,
-    }));
+    const newEditorData = [...editorData];
+    newEditorData[index] = data;
+    setEditorData(newEditorData);
   };
 
   const handleSubmit = () => {
-    // Send the collected editor data to the server or take further action
-    console.log("Editor Data:", editorData);
+    // Map the templatesArray to get the actual template IDs based on the index
+    const templateIds = templatesArray.map((template, index) => {
+      const templateDataItem = templateData.find(
+        (templateItem) => templateItem.template_name === template
+      );
+      return templateDataItem ? templateDataItem.id : null;
+    });
+    const validTemplateIds = templateIds.filter((id) => id !== null);
+
+    // Create an array to store the data for each template
+    const templateDataArray = validTemplateIds.map((templateId, index) => {
+      return {
+        templateId,
+        editorData: editorData[index], // Editor data for the template
+      };
+    });
+
+    // Create the postFileData object with the necessary fields
+    const postFileData = {
+      countryName: countryData.country_name,
+      templateIds: validTemplateIds, // Use the actual template IDs
+      templateData: templateDataArray.map(
+        (templateData) => templateData.editorData
+      ),
+    };
+
+    // Send postFileData to the backend API
+    console.log("postFileData:", postFileData);
+
+    axios
+      .post(`http://localhost:3000/api/template_details`, postFileData)
+      .then((response) => {
+        console.log("Added to backend\n");
+        // ... (your redirect logic here)
+        //send country name as param for the page to display the contents of the file.
+        mRouter.push("/previewCountryProfile");
+      })
+      .catch((error) => {
+        console.error("Error posting data:", error);
+      });
+
+    // You can now send postFileData to the backend API using axios or any other HTTP library
   };
 
   return (
@@ -102,7 +145,10 @@ const Page = () => {
               <div className="space-x-4 w-4/5">
                 {" "}
                 {/* 4/5 of the space */}
-                <EditorPage onDataChanged={handleEditorDataChange} />
+                <EditorPage
+                  index={index}
+                  onDataChanged={handleEditorDataChange}
+                />
               </div>
             </div>
             <Separator className="bg-slate-600" />

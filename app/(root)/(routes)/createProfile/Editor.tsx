@@ -8,13 +8,13 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
 
-const EditorPage = ({ onDataChanged }) => {
+const EditorPage = ({ onDataChanged, index }) => {
   const [editorContent, setEditorContent] = useState("");
 
   const handleEditorChange = (event: any, editor: { getData: () => any }) => {
     const data = editor.getData();
     setEditorContent(data);
-    onDataChanged(data); // Send the data back to the parent
+    onDataChanged(index, data); // Send the data back to the parent
   };
 
   return (
