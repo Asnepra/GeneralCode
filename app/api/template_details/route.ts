@@ -41,15 +41,16 @@ export const POST = async (req: Request, res: Response) => {
     await mssqlconnect();
     const formData = await req.json();
     console.log("Form data", formData);
-    const { countryName, templateIds, templateData } = formData;
+    const { countryId, countryName, templateIds, templateData } = formData;
     //Update the database for each template data
 
     // Create a file for each templateData
-    for (let i = 0; i < templateData.length; i++) {
-      const fileName = `template_${templateIds[i]}.html`;
-      await fs.writeFile(fileName, templateData[i]);
-      console.log(`File "${fileName}" created successfully.`);
-    }
+    // for (let i = 0; i < templateIds.length; i++) {
+    //   const fileName = `template_${templateIds[i]}.docx`;
+    //   await fs.writeFile(fileName, templateData[i]);
+    //   console.log(`File "${fileName}" created successfully.`);
+    //   //Run the sql query top insert each templateId data
+    // }
     //console.log("Temoplate name ----\n " + templateName);
     // await sql.query`
     // INSERT INTO dbo.Template_Master (TEMPLATE_NAME, CREATED_BY, CREATED_ON, TEMPLATE_IS_ACTIVE)

@@ -15,6 +15,7 @@ const Page = () => {
   const selectedTemplates = params.get("selectedTemplates");
 
   const [countryData, setCountryData] = useState({
+    country_id: "",
     country_name: selectedCountry || "",
     flagImageSrc: "",
     mapImageSrc: "",
@@ -30,21 +31,14 @@ const Page = () => {
         .then((response) => {
           //console.log("CREATE PROFILE COUNTRY DATA\n", response.data);
           // Check if the response contains the expected properties
-          if (
-            response.data &&
-            response.data.COUNTRY_NAME &&
-            response.data.COUNTRY_FLAG_LOCATION &&
-            response.data.COUNTRY_MAP_LOCATION
-          ) {
-            // Update the state with the fetched data
-            setCountryData({
-              country_name: response.data.COUNTRY_NAME,
-              flagImageSrc: response.data.COUNTRY_FLAG_LOCATION,
-              mapImageSrc: response.data.COUNTRY_MAP_LOCATION,
-            });
-          } else {
-            console.error("Invalid response data:", response.data);
-          }
+
+          // Update the state with the fetched data
+          setCountryData({
+            country_id: response.data.Country_ID,
+            country_name: response.data.COUNTRY_NAME,
+            flagImageSrc: response.data.COUNTRY_FLAG_LOCATION,
+            mapImageSrc: response.data.COUNTRY_MAP_LOCATION,
+          });
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
@@ -108,6 +102,7 @@ const Page = () => {
 
     // Create the postFileData object with the necessary fields
     const postFileData = {
+      countryId: countryData.country_id,
       countryName: countryData.country_name,
       templateIds: validTemplateIds, // Use the actual template IDs
       templateData: templateDataArray.map(
@@ -124,7 +119,7 @@ const Page = () => {
         console.log("Added to backend\n");
         // ... (your redirect logic here)
         //send country name as param for the page to display the contents of the file.
-        mRouter.push("/previewCountryProfile");
+        //mRouter.push("/previewCountryProfile");
       })
       .catch((error) => {
         console.error("Error posting data:", error);
