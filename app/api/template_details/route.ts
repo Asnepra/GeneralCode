@@ -64,10 +64,26 @@ export const POST = async (req: Request, res: Response) => {
           `File "${docFileName}, and file path is ----${filePath}" created successfully.`
         );
 
-        //update the template details into the db,
-        // Update the database with relevant information
-        // You should have code here to perform the database update
-        await sql.query`
+        // Check if the record already exists for the templateId and countryId
+        const existingRecord = await sql.query`
+          SELECT TOP 1 * FROM dbo.Template_File
+          WHERE TEMPLATEFILE_TEMPLATE_ID = ${templateIds[i]}
+          AND TEMPLATEFILE_COUNTRY_ID = ${countryId}
+        `;
+        console.log("existing records", existingRecord);
+        if (existingRecord.recordset.length > 0) {
+          console.log("Template Id exist -----------", templateIds[i]);
+          //Just update the existing record for the particular templateId and countryId combination
+          await sql.query`UPDATE dbo.TEMPLATE_FILE SET TEMPLATE_FILE_DOC_LOCATION = ${filePath},
+           TEMPLATE_FILE_DOC_DATA_IS_USED = 1
+         WHERE
+           TEMPLATEFILE_TEMPLATE_ID = ${templateIds[i]}
+           AND TEMPLATEFILE_COUNTRY_ID = ${countryId}`;
+        } else {
+          //update the template details into the db,
+          // Update the database with relevant information
+          // You should have code here to perform the database update
+          await sql.query`
         INSERT INTO dbo.Template_File (
           TEMPLATEFILE_TEMPLATE_ID,
           TEMPLATE_FILE_DOC_ID,
@@ -82,18 +98,14 @@ export const POST = async (req: Request, res: Response) => {
       );
       
         `;
+        }
 
         // Update the database with relevant information
         // You should have code here to perform the database update
       } catch (error) {
         console.error("Error occurred while saving file on the server:", error);
-        return NextResponse.json({
-          Message: "Failed uploading of template",
-          status: 500,
-        });
       }
     }
-
     // You may want to provide a success response
     return NextResponse.json({
       Message: "Templates added successfully",
