@@ -9,6 +9,8 @@ import { Separator } from "@components/ui/separator";
 import { Wand2 } from "lucide-react";
 import { Button } from "@components/ui/button";
 
+import qs from "query-string";
+
 const Page = () => {
   const params = useSearchParams();
   const selectedCountry = params.get("countrySelected");
@@ -93,6 +95,8 @@ const Page = () => {
     });
     const validTemplateIds = templateIds.filter((id) => id !== null);
 
+    const templateIdsString = validTemplateIds.join(",");
+
     // Create an array to store the data for each template
     const templateDataArray = validTemplateIds.map((templateId, index) => {
       return {
@@ -120,7 +124,22 @@ const Page = () => {
         console.log("Added to backend\n");
         // ... (your redirect logic here)
         //send country name as param for the page to display the contents of the file.
-        //mRouter.push("/previewCountryProfile");
+
+        let currentQuery = {};
+        if (params) {
+          currentQuery = qs.parse(params.toString());
+        }
+
+        const updatedQuery = {
+          ...currentQuery,
+          countryId: countryData.country_id,
+          selectedTemplates: templateIdsString, // Join templates into a comma-separated string
+        };
+
+        const updatedQueryString = qs.stringify(updatedQuery);
+        const url = `/previewCountryProfile?${updatedQueryString}`;
+        console.log("url \n", url);
+        mRouter.push(url);
       })
       .catch((error) => {
         console.error("Error posting data:", error);
