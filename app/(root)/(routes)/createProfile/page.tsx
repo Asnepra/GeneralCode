@@ -39,7 +39,7 @@ const Page = () => {
             flagImageSrc: response.data.COUNTRY_FLAG_LOCATION,
             mapImageSrc: response.data.COUNTRY_MAP_LOCATION,
           });
-          console.log("COutry data fetched\n", response.data);
+          //console.log("COutry data fetched\n", response.data);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);

@@ -1,5 +1,7 @@
 import mssqlconnect from "@lib/mssqlconnect";
+import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
+import path from "path";
 
 const sql = require("mssql");
 
@@ -35,34 +37,74 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     });
   }
 };
+
 export const POST = async (req: Request, res: Response) => {
   try {
-    // Connect to the MongoDB database
+    // Connect to the database (assuming you have the necessary code for this)
     await mssqlconnect();
+
     const formData = await req.json();
-    console.log("Form data", formData);
     const { countryId, countryName, templateIds, templateData } = formData;
-    //Update the database for each template data
+    console.log("Form data: " + formData);
 
-    // Create a file for each templateData
-    // for (let i = 0; i < templateIds.length; i++) {
-    //   const fileName = `template_${templateIds[i]}.docx`;
-    //   await fs.writeFile(fileName, templateData[i]);
-    //   console.log(`File "${fileName}" created successfully.`);
-    //   //Run the sql query top insert each templateId data
-    // }
-    //console.log("Temoplate name ----\n " + templateName);
-    // await sql.query`
-    // INSERT INTO dbo.Template_Master (TEMPLATE_NAME, CREATED_BY, CREATED_ON, TEMPLATE_IS_ACTIVE)
-    // VALUES (${templateName}, 2, GETDATE(), 1)`;
+    for (let i = 0; i < templateIds.length; i++) {
+      const docFileName = `doc_file_name_${countryName}_template_data_${countryId}_${Date.now()}_${
+        templateIds[i]
+      }.html`;
+      const filePath = path.join(
+        process.cwd(),
+        "public/uploads/countrymaster/templateData/",
+        docFileName
+      );
 
-    return new NextResponse("Template Added Succefully", {
+      try {
+        // Write the template data to the file
+        await writeFile(filePath, templateData[i], "utf8");
+        console.log(
+          `File "${docFileName}, and file path is ----${filePath}" created successfully.`
+        );
+
+        //update the template details into the db,
+        // Update the database with relevant information
+        // You should have code here to perform the database update
+        await sql.query`
+        INSERT INTO dbo.Template_File (
+          TEMPLATEFILE_TEMPLATE_ID,
+          TEMPLATE_FILE_DOC_ID,
+          TEMPLATE_FILE_DOC_LOCATION,
+          TEMPLATE_FILE_DOC_DATA_IS_USED,
+          TEMPLATEFILE_COUNTRY_ID
+      )
+      VALUES (
+          ${templateIds[i]},              
+          ${countryId},
+          ${filePath}, 1,${countryId}              
+      );
+      
+        `;
+
+        // Update the database with relevant information
+        // You should have code here to perform the database update
+      } catch (error) {
+        console.error("Error occurred while saving file on the server:", error);
+        return NextResponse.json({
+          Message: "Failed uploading of template",
+          status: 500,
+        });
+      }
+    }
+
+    // You may want to provide a success response
+    return NextResponse.json({
+      Message: "Templates added successfully",
       status: 200,
-      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    // Handle errors
-    console.log("Api endpoint error");
-    console.error("Error adding Template:", error);
+    console.error("API endpoint error:", error);
+    // Handle errors and provide an appropriate response
+    return NextResponse.json({
+      Message: "Internal server error",
+      status: 500,
+    });
   }
 };
