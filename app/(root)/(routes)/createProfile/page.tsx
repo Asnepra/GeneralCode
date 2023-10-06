@@ -15,8 +15,8 @@ const Page = () => {
   const selectedTemplates = params.get("selectedTemplates");
 
   const [countryData, setCountryData] = useState({
-    country_id: "",
     country_name: selectedCountry || "",
+    country_id: -1,
     flagImageSrc: "",
     mapImageSrc: "",
   });
@@ -34,11 +34,12 @@ const Page = () => {
 
           // Update the state with the fetched data
           setCountryData({
-            country_id: response.data.Country_ID,
+            country_id: response.data.Country_Id,
             country_name: response.data.COUNTRY_NAME,
             flagImageSrc: response.data.COUNTRY_FLAG_LOCATION,
             mapImageSrc: response.data.COUNTRY_MAP_LOCATION,
           });
+          console.log("COutry data fetched\n", response.data);
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
