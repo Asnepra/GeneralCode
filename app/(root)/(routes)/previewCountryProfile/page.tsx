@@ -1,7 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Image from "next/image";
+import { Button } from "@components/ui/button";
+import html2pdf from "html2pdf.js"; // Import html2pdf.js
 
 // Define an interface for the API response
 interface CountryDataResponse {
@@ -22,6 +24,7 @@ const PreviewCountryProfile = () => {
     null
   );
   const [error, setError] = useState<Error | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null); // Reference to the content div
 
   useEffect(() => {
     // Get URL parameters from the current URL
@@ -48,22 +51,52 @@ const PreviewCountryProfile = () => {
       });
   }, []);
 
+  // Function to handle PDF download
+  const downloadPDF = () => {
+    if (typeof window !== "undefined" && contentRef.current) {
+      const content = contentRef.current;
+
+      // Define PDF options
+      const pdfOptions = {
+        margin: 10,
+        filename: "country_profile.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
+
+      // Generate PDF
+      html2pdf()
+        .from(content)
+        .set(pdfOptions)
+        .outputPdf((pdf: { save: () => void }) => {
+          // Trigger download
+          pdf.save();
+        });
+    }
+  };
+
   return (
-    <div className="pl-24 container">
+    <div className="pl-24 container p-2">
       {error ? (
         <div>Error: {error.message}</div>
       ) : countryData ? (
-        <div className="flex items-center justify-between gap-x-3 mb-8">
+        <div
+          ref={contentRef}
+          className="flex items-center justify-between gap-x-3 mb-8"
+        >
           <div className={"w-fit rounded-md"}>
             <Image
-              className={"w-28 h-28 rounded-lg object-contain"}
+              className={"w-36 h-36 rounded-lg object-contain"}
               src={
                 countryData.countryDataWithImages.COUNTRY_FLAG_LOCATION ||
                 "/placeholder.svg"
               }
               alt="Country Flag Image"
-              height={28}
-              width={28}
+              height={100}
+              width={100}
+              quality={100}
+              loading="eager"
             />
           </div>
           <div>
@@ -71,17 +104,22 @@ const PreviewCountryProfile = () => {
               {countryData.countryDataWithImages.COUNTRY_NAME}
             </h2>
           </div>
-          <div className={" w-fit rounded-md"}>
+          <div className={"w-fit rounded-md"}>
             <Image
-              className={"w-28 h-28 rounded-lg object-contain"}
+              className={"rounded-lg object-contain"}
               src={
                 countryData.countryDataWithImages.COUNTRY_MAP_LOCATION ||
                 "/placeholder.svg"
               }
               alt="Country Map Image"
-              height={28}
-              width={28}
+              height={100}
+              width={100}
+              quality={100}
+              loading="eager"
             />
+          </div>
+          <div className="">
+            <Button onClick={downloadPDF}>Download PDF</Button>
           </div>
         </div>
       ) : (
@@ -95,8 +133,9 @@ const PreviewCountryProfile = () => {
           <ul>
             {countryData.templateDetails.map((template, index) => (
               <li key={index}>
-                <div className="font-bold">{template.TEMPLATE_NAME}</div>
+                <div className="font-bold p-2">{template.TEMPLATE_NAME}</div>
                 <div
+                  className="p-2"
                   dangerouslySetInnerHTML={{
                     __html: template.TEMPLATE_FILE_DOC_LOCATION,
                   }}

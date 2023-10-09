@@ -5,10 +5,17 @@
 @tailwind utilities;
 
 /* Merge of the two CSS files */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+th, td {
+  border: 1px solid #000; /* Add border styles for th and td elements */
+  padding: 8px;
+  text-align: left;
+}
+
 
 .ck-editor__editable {
     min-height: 220px;
