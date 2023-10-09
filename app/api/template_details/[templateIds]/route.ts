@@ -1,8 +1,10 @@
+// Import necessary modules and libraries
 import mssqlconnect from "@lib/mssqlconnect";
 import { NextRequest, NextResponse } from "next/server";
 const sql = require("mssql");
 import path from "path";
 
+// Define the API route handler
 interface Iparams {
   templateIds: string;
 }
@@ -13,10 +15,10 @@ export const GET = async (
   res: NextResponse
 ) => {
   try {
+    // Connect to the database
     await mssqlconnect();
     const templateIds = params.templateIds;
     const templateIdsArray = templateIds.split(",");
-
     const countryId = templateIdsArray[0];
     const templateArray = templateIdsArray.slice(1);
 
@@ -31,7 +33,7 @@ export const GET = async (
 
     const countryDetails = result.recordset[0];
 
-    const serverUrl = "http://localhost:3000";
+    const serverUrl = "http://localhost:3000"; // Use HTTPS
     const flagImageUrl = `${serverUrl}/uploads/countrymaster/flag/${path.basename(
       countryDetails.COUNTRY_FLAG_LOCATION
     )}`;
@@ -39,13 +41,17 @@ export const GET = async (
       countryDetails.COUNTRY_MAP_LOCATION
     )}`;
 
+    // Replace backslashes with forward slashes in the file paths
+    const flagImageUrlFixed = flagImageUrl.replace(/\\/g, "/");
+    const mapImageUrlFixed = mapImageUrl.replace(/\\/g, "/");
+
     const countryDataWithImages = {
       ...countryDetails,
-      COUNTRY_FLAG_LOCATION: flagImageUrl,
-      COUNTRY_MAP_LOCATION: mapImageUrl,
+      COUNTRY_FLAG_LOCATION: flagImageUrlFixed,
+      COUNTRY_MAP_LOCATION: mapImageUrlFixed,
     };
 
-    // Initialize an array to store template names
+    // Initialize an array to store template names and HTML file URLs
     const templateDetails = [];
     const templateResult = [];
 
@@ -72,11 +78,22 @@ export const GET = async (
         `;
 
         if (templateResult[i].recordset.length > 0) {
+          const templateName = templateResult[i].recordset[0].TEMPLATE_NAME;
+          const templateFileDocLocation =
+            templateDataResult.recordset[0]?.TEMPLATE_FILE_DOC_LOCATION || null;
+
+          // Replace backslashes with forward slashes in the HTML file location
+          const htmlFileUrlFixed = templateFileDocLocation
+            ? `${serverUrl}/${templateFileDocLocation}`
+                .replace(/\\/g, "/")
+                .replace(/^.*public\//, "")
+            : // Remove "uploads/countrymaster/templateData/"
+              null;
+
+          // Include the HTML file URL in the response
           templateDetails.push({
-            TEMPLATE_NAME: templateResult[i].recordset[0].TEMPLATE_NAME,
-            TEMPLATE_FILE_DOC_LOCATION:
-              templateDataResult.recordset[0]?.TEMPLATE_FILE_DOC_LOCATION ||
-              null,
+            TEMPLATE_NAME: templateName,
+            TEMPLATE_FILE_DOC_LOCATION: `${serverUrl}/${htmlFileUrlFixed}`,
           });
         } else {
           console.warn(
@@ -90,7 +107,6 @@ export const GET = async (
         );
       }
     }
-    console.log("#n ------ ", templateDetails);
 
     return new NextResponse(
       JSON.stringify({ countryDataWithImages, templateDetails }),
