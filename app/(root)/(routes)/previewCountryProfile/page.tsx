@@ -66,6 +66,7 @@ const PreviewCountryProfile = () => {
     const input = pdfref.current;
     console.log(pdfref.current);
     html2canvas(input).then((canvas) => {
+      if (!pdfref.current) return;
       // Determine the text content and font size
       const textContent = pdfref.current.innerText;
       const fontSize = 10; // Adjust the font size as needed
@@ -84,7 +85,7 @@ const PreviewCountryProfile = () => {
       const textLines = pdf.splitTextToSize(textContent, pageWidth - 20); // Adjust margin as needed
 
       // Add each line to the PDF
-      textLines.forEach((line, index) => {
+      textLines.forEach((line: string | string[], index: number) => {
         pdf.text(line, 10, 10 + index * fontSize);
       });
 
