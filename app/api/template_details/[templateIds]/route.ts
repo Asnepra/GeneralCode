@@ -1,8 +1,8 @@
-// Import necessary modules and libraries
 import mssqlconnect from "@lib/mssqlconnect";
 import { NextRequest, NextResponse } from "next/server";
 const sql = require("mssql");
 import path from "path";
+import fs from "fs/promises";
 
 // Define the API route handler
 interface Iparams {
@@ -82,19 +82,23 @@ export const GET = async (
           const templateFileDocLocation =
             templateDataResult.recordset[0]?.TEMPLATE_FILE_DOC_LOCATION || null;
 
-          // Replace backslashes with forward slashes in the HTML file location
-          const htmlFileUrlFixed = templateFileDocLocation
-            ? `${serverUrl}/${templateFileDocLocation}`
-                .replace(/\\/g, "/")
-                .replace(/^.*public\//, "")
-            : // Remove "uploads/countrymaster/templateData/"
-              null;
+          // Construct the file path based on countryId and templateId
 
-          // Include the HTML file URL in the response
-          templateDetails.push({
-            TEMPLATE_NAME: templateName,
-            TEMPLATE_FILE_DOC_LOCATION: `${serverUrl}/${htmlFileUrlFixed}`,
-          });
+          try {
+            // Read the content of the HTML file
+            const htmlContent = await fs.readFile(
+              templateFileDocLocation,
+              "utf8"
+            );
+
+            // Include the HTML content in the response
+            templateDetails.push({
+              TEMPLATE_NAME: templateName,
+              TEMPLATE_FILE_DOC_LOCATION: htmlContent,
+            });
+          } catch (error) {
+            console.error("Error reading HTML file:", error);
+          }
         } else {
           console.warn(
             `Template with TEMPLATEFILE_ID ${templateArray[i]} not found.`

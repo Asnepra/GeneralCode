@@ -1,10 +1,27 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Image from "next/image";
+
+// Define an interface for the API response
+interface CountryDataResponse {
+  countryDataWithImages: {
+    Country_Id: number;
+    COUNTRY_NAME: string;
+    COUNTRY_FLAG_LOCATION: string;
+    COUNTRY_MAP_LOCATION: string;
+  };
+  templateDetails: {
+    TEMPLATE_NAME: string;
+    TEMPLATE_FILE_DOC_LOCATION: string;
+  }[];
+}
 
 const PreviewCountryProfile = () => {
-  const [countryData, setCountryData] = useState(null);
-  const [error, setError] = useState(null);
+  const [countryData, setCountryData] = useState<CountryDataResponse | null>(
+    null
+  );
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     // Get URL parameters from the current URL
@@ -32,17 +49,62 @@ const PreviewCountryProfile = () => {
   }, []);
 
   return (
-    <div className="pl-24">
+    <div className="pl-24 container">
       {error ? (
         <div>Error: {error.message}</div>
       ) : countryData ? (
-        <div>
-          <h2>Country Data</h2>
-          <p>Country ID: {countryData.countryId}</p>
-          <pre>{JSON.stringify(countryData, null, 2)}</pre>
+        <div className="flex items-center justify-between gap-x-3 mb-8">
+          <div className={"w-fit rounded-md"}>
+            <Image
+              className={"w-28 h-28 rounded-lg object-contain"}
+              src={
+                countryData.countryDataWithImages.COUNTRY_FLAG_LOCATION ||
+                "/placeholder.svg"
+              }
+              alt="Country Flag Image"
+              height={28}
+              width={28}
+            />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold">
+              {countryData.countryDataWithImages.COUNTRY_NAME}
+            </h2>
+          </div>
+          <div className={" w-fit rounded-md"}>
+            <Image
+              className={"w-28 h-28 rounded-lg object-contain"}
+              src={
+                countryData.countryDataWithImages.COUNTRY_MAP_LOCATION ||
+                "/placeholder.svg"
+              }
+              alt="Country Map Image"
+              height={28}
+              width={28}
+            />
+          </div>
         </div>
       ) : (
         <div>Loading...</div>
+      )}
+
+      {/* Display Template File Locations */}
+      {countryData && countryData.templateDetails.length > 0 && (
+        <div>
+          {" "}
+          <ul>
+            {countryData.templateDetails.map((template, index) => (
+              <li key={index}>
+                <div className="font-bold">{template.TEMPLATE_NAME}</div>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: template.TEMPLATE_FILE_DOC_LOCATION,
+                  }}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
