@@ -1,9 +1,11 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
+import jspdf from "jspdf";
+// Import jsPDF
+import html2canvas from "html2canvas";
 import { Button } from "@components/ui/button";
-import html2pdf from "html2pdf.js"; // Import html2pdf.js
 
 // Define an interface for the API response
 interface CountryDataResponse {
@@ -25,6 +27,8 @@ const PreviewCountryProfile = () => {
   );
   const [error, setError] = useState<Error | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null); // Reference to the content div
+  const pdfDocumentRef = useRef<jspdf | null>(null); // Reference to the PDF document
+  const pdfref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // Get URL parameters from the current URL
@@ -50,41 +54,50 @@ const PreviewCountryProfile = () => {
         setError(error);
       });
   }, []);
+  const generatePDF = () => {
+    const doc = new jspdf();
+    doc.text("Hello, PDF!", 10, 10);
+    doc.save("test.pdf");
+  };
 
-  // Function to handle PDF download
   const downloadPDF = () => {
-    if (typeof window !== "undefined" && contentRef.current) {
-      const content = contentRef.current;
+    if (!pdfref.current) return;
 
-      // Define PDF options
-      const pdfOptions = {
-        margin: 10,
-        filename: "country_profile.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
+    const input = pdfref.current;
+    console.log(pdfref.current);
+    html2canvas(input).then((canvas) => {
+      // Determine the text content and font size
+      const textContent = pdfref.current.innerText;
+      const fontSize = 10; // Adjust the font size as needed
 
-      // Generate PDF
-      html2pdf()
-        .from(content)
-        .set(pdfOptions)
-        .outputPdf((pdf: { save: () => void }) => {
-          // Trigger download
-          pdf.save();
-        });
-    }
+      // Determine the page size based on the text content and font size
+      const textWidth = (fontSize * textContent.length) / 2; // Estimate text width
+      const pageWidth = textWidth + 20; // Adjust the page width as needed
+      const pageHeight = 297; // A4 height in mm
+
+      const pdf = new jspdf("p", "mm", [pageWidth, pageHeight]);
+
+      // Set the font size
+      pdf.setFontSize(fontSize);
+
+      // Split the text into multiple lines if it's too wide for the page
+      const textLines = pdf.splitTextToSize(textContent, pageWidth - 20); // Adjust margin as needed
+
+      // Add each line to the PDF
+      textLines.forEach((line, index) => {
+        pdf.text(line, 10, 10 + index * fontSize);
+      });
+
+      pdf.save("demoFile.pdf");
+    });
   };
 
   return (
-    <div className="pl-24 container p-2">
+    <div ref={pdfref} className="pl-24 container p-2">
       {error ? (
         <div>Error: {error.message}</div>
       ) : countryData ? (
-        <div
-          ref={contentRef}
-          className="flex items-center justify-between gap-x-3 mb-8"
-        >
+        <div className="flex items-center justify-between gap-x-3 mb-8">
           <div className={"w-fit rounded-md"}>
             <Image
               className={"w-36 h-36 rounded-lg object-contain"}
@@ -118,9 +131,7 @@ const PreviewCountryProfile = () => {
               loading="eager"
             />
           </div>
-          <div className="">
-            <Button onClick={downloadPDF}>Download PDF</Button>
-          </div>
+          {/* Removed the download button from this section */}
         </div>
       ) : (
         <div>Loading...</div>
@@ -129,7 +140,6 @@ const PreviewCountryProfile = () => {
       {/* Display Template File Locations */}
       {countryData && countryData.templateDetails.length > 0 && (
         <div>
-          {" "}
           <ul>
             {countryData.templateDetails.map((template, index) => (
               <li key={index}>
@@ -145,6 +155,11 @@ const PreviewCountryProfile = () => {
           </ul>
         </div>
       )}
+
+      {/* Added a separate download button */}
+      <div className="mt-4">
+        <Button onClick={downloadPDF}>Download PDF</Button>
+      </div>
     </div>
   );
 };

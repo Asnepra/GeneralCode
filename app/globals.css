@@ -16,6 +16,11 @@ th, td {
   text-align: left;
 }
 
+#pdf-content {
+  word-break: break-all; /* or word-break: break-word; */
+}
+
+
 
 .ck-editor__editable {
     min-height: 220px;
