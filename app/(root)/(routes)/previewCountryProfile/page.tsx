@@ -26,9 +26,9 @@ const PreviewCountryProfile = () => {
     null
   );
   const [error, setError] = useState<Error | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null); // Reference to the content div
-  const pdfDocumentRef = useRef<jspdf | null>(null); // Reference to the PDF document
+
   const pdfref = useRef<HTMLDivElement | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false); // Add a state for download button visibility
 
   useEffect(() => {
     // Get URL parameters from the current URL
@@ -157,10 +157,12 @@ const PreviewCountryProfile = () => {
         </div>
       )}
 
-      {/* Added a separate download button */}
-      <div className="mt-4">
-        <Button onClick={downloadPDF}>Download PDF</Button>
-      </div>
+      {/* Conditionally render the download button */}
+      {countryData && !isDownloading && (
+        <div className="mt-4">
+          <Button onClick={downloadPDF}>Download PDF</Button>
+        </div>
+      )}
     </div>
   );
 };
