@@ -4,6 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 
 const sql = require("mssql");
+
+// Connect to the MongoDB database
+
+interface Iparams {
+  countryId: string;
+}
 export const POST = async (req: Request, res: Response) => {
   try {
     // Connect to the database (assuming you have the necessary code for this)

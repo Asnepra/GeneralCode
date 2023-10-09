@@ -1,60 +1,51 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Separator } from "@components/ui/separator";
-import { Wand2 } from "lucide-react";
-import { Button } from "@components/ui/button";
 
-const Page = () => {
-  const params = useSearchParams();
-  const selectedCountry = params.get("countrySelected");
-  const selectedTemplates = params.get("selectedTemplates");
-  const [templateIds, setTemplateIds] = useState<number[]>([]);
-  const [templateDetails, setTemplateDetails] = useState<any[]>([]);
+const PreviewCountryProfile = () => {
+  const [countryData, setCountryData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (selectedCountry && selectedTemplates) {
-      // Convert the comma-separated string of selectedTemplates into an array of template IDs
-      const templateIdsArray = selectedTemplates.split(",").map(Number);
-      setTemplateIds(templateIdsArray);
+    // Get URL parameters from the current URL
+    const params = new URLSearchParams(window.location.search);
+    const countryId = params.get("countryId");
+    const countrySelected = params.get("countrySelected");
+    const selectedTemplates = params.get("selectedTemplates");
 
-      // Fetch template details for each templateId
-      const fetchTemplateDetails = async () => {
-        const detailsPromises = templateIdsArray.map(async (templateId) => {
-          try {
-            const response = await axios.get(
-              `http://localhost:3000/api/template_details/${templateId}`
-            );
-            return response.data; // Assuming your API response is the template details
-          } catch (error) {
-            console.error("Error fetching template details:", error);
-            return null;
-          }
-        });
+    // Combine countryId and selectedTemplates into one string
+    const data = `${countryId},${selectedTemplates}`;
 
-        const details = await Promise.all(detailsPromises);
-        setTemplateDetails(details);
-      };
+    // Construct the API URL with the combined data
+    const apiUrl = `http://localhost:3000/api/template_details/${data}`;
 
-      fetchTemplateDetails();
-    }
-  }, [selectedCountry, selectedTemplates, templateIds]);
+    // Make the API request
+    axios
+      .get(apiUrl)
+      .then((response) => {
+        console.log(response);
+        setCountryData(response.data);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  }, []);
 
   return (
     <div className="pl-24">
-      <div>Country: {selectedCountry}</div>
-      <div>Selected Templates: {templateIds.join(", ")}</div>
-      <div>
-        Template Details:
-        <ul>
-          {templateDetails.map((templateDetail, index) => (
-            <li key={index}>{/* Render template detail data here */}</li>
-          ))}
-        </ul>
-      </div>
+      {error ? (
+        <div>Error: {error.message}</div>
+      ) : countryData ? (
+        <div>
+          <h2>Country Data</h2>
+          <p>Country ID: {countryData.countryId}</p>
+          <pre>{JSON.stringify(countryData, null, 2)}</pre>
+        </div>
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 };
 
-export default Page;
+export default PreviewCountryProfile;
