@@ -18,13 +18,19 @@ const saveAsPdf = async (url: string) => {
 
   const result = await page.pdf({
     format: "a4",
+    margin: {
+      bottom: "1mm",
+      left: "1mm",
+      right: "1mm",
+      top: "1mm",
+    },
   });
+
   await browser.close();
-  //console.log("pdf file", result);
 
   const filePath = path.join(
     process.cwd(),
-    "public/uploads/countrymaster/flag/",
+    "public/uploads/countrymaster/templateData/",
     "downloaded.pdf"
   );
 

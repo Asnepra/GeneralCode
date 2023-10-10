@@ -98,11 +98,14 @@ const PreviewCountryProfile = () => {
   // Call the downloadPDF function when needed, e.g., when a button is clicked
 
   return (
-    <div ref={pdfref} className="pl-24 container p-2">
+    <div ref={pdfref} className="pl-24 container p-2 max-w-6xl">
       {error ? (
         <div>Error: {error.message}</div>
       ) : countryData ? (
-        <div className="flex items-center justify-between gap-x-3 mb-8">
+        <div
+          id="print-div"
+          className="flex items-center justify-between gap-x-3 mb-8"
+        >
           <div className={"w-fit rounded-md"}>
             <Image
               className={"w-36 h-36 rounded-lg object-contain"}
