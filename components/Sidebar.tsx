@@ -4,18 +4,17 @@ import { Home, Plus, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils";
-/**
- * I am going to use isPro as user loggedin or not
- */
+
 interface SidebarProps {
+  className?: string;
   isPro?: boolean;
 }
 
-export const Sidebar = ({ isPro }: SidebarProps) => {
+export const Sidebar = ({ isPro, className }: SidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const onNavigate = (url: string, pro: boolean) => {
-    //TODO: Check if user is logged in or not using pro
+    // TODO: Check if the user is logged in or not using 'pro'
     return router.push(url);
   };
 
@@ -41,7 +40,9 @@ export const Sidebar = ({ isPro }: SidebarProps) => {
   ];
 
   return (
-    <div className="space-y-4 flex flex-col h-full text-primary bg-secondary">
+    <div
+      className={`space-y-4 flex flex-col h-full text-primary bg-secondary ${className}`}
+    >
       <div className="p-3 flex-1 flex justify-center">
         <div className="space-y-2">
           {routes.map((route) => (

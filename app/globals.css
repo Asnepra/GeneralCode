@@ -4,6 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Apply styles only when printing */
+/* globals.css */
+
+/* Hide the Navbar when printing */
+@media print {
+  .hide-on-print {
+    display: none;
+  }
+}
+
+
 /* Merge of the two CSS files */
 table {
   border-collapse: collapse;

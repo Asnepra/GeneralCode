@@ -61,37 +61,41 @@ const PreviewCountryProfile = () => {
   };
 
   const downloadPDF = () => {
-    if (!pdfref.current) return;
+    const urlParam = encodeURIComponent(window.location.href); // Encode the URL
 
-    const input = pdfref.current;
-    console.log(pdfref.current);
-    html2canvas(input).then((canvas) => {
-      if (!pdfref.current) return;
-      // Determine the text content and font size
-      const textContent = pdfref.current.innerText;
-      const fontSize = 10; // Adjust the font size as needed
+    // Define the base URL of your API endpoint
+    const baseUrl = `http://localhost:3000/api/country_profile_pdf/${urlParam}`;
 
-      // Determine the page size based on the text content and font size
-      const textWidth = (fontSize * textContent.length) / 2; // Estimate text width
-      const pageWidth = textWidth + 20; // Adjust the page width as needed
-      const pageHeight = 297; // A4 height in mm
+    // Make a GET request to the constructed API URL using Axios
+    console.log(`Downloading ${urlParam}`);
+    axios
+      .get(baseUrl, { responseType: "blob" })
+      .then((response) => {
+        // Handle the response
+        if (response.status === 200) {
+          // Create a Blob from the response data
+          const blob = new Blob([response.data], { type: "application/pdf" });
 
-      const pdf = new jspdf("p", "mm", [pageWidth, pageHeight]);
+          // Create a data URI for the Blob
+          const dataUri = URL.createObjectURL(blob);
 
-      // Set the font size
-      pdf.setFontSize(fontSize);
-
-      // Split the text into multiple lines if it's too wide for the page
-      const textLines = pdf.splitTextToSize(textContent, pageWidth - 20); // Adjust margin as needed
-
-      // Add each line to the PDF
-      textLines.forEach((line: string | string[], index: number) => {
-        pdf.text(line, 10, 10 + index * fontSize);
+          // Open the PDF in a new browser tab
+          const newTab = window.open(dataUri, "_blank");
+          if (newTab) {
+            newTab.focus(); // Focus on the new tab
+          } else {
+            console.error("Failed to open new tab");
+          }
+        } else {
+          console.error("Failed to download PDF:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("An error occurred:", error);
       });
-
-      pdf.save("demoFile.pdf");
-    });
   };
+
+  // Call the downloadPDF function when needed, e.g., when a button is clicked
 
   return (
     <div ref={pdfref} className="pl-24 container p-2">
@@ -159,7 +163,7 @@ const PreviewCountryProfile = () => {
 
       {/* Conditionally render the download button */}
       {countryData && !isDownloading && (
-        <div className="mt-4">
+        <div className="mt-4 hide-on-print">
           <Button onClick={downloadPDF}>Download PDF</Button>
         </div>
       )}
