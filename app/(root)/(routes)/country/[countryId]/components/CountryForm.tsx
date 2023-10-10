@@ -127,6 +127,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
         .patch(`/api/country_category/add`, patchCountryData, config)
         .then((response) => {
           console.log("Added to backend\n");
+          window.location.reload(); // Reload the page
           // ... (your redirect logic here)
         })
         .catch((error) => {
@@ -140,6 +141,8 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
         .post(`/api/country_category/add`, postCountryData, config)
         .then((response) => {
           console.log("Added to backend\n");
+          window.location.reload(); // Reload the page
+
           // ... (your redirect logic here)
         })
         .catch((error) => {
