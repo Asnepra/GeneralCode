@@ -201,7 +201,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
             onOpenChange={setIsOpen}
             className="h-full space-y-2 max-w-3xl mx-auto"
           >
-            <CollapsibleTrigger asChild>
+            {/* <CollapsibleTrigger asChild>
               <div className="flex items-center justify-between space-x-4">
                 <div className="space-y-2 w-full col-span-2">
                   <div>
@@ -218,7 +218,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
                   <span className="sr-only">Toggle</span>
                 </Button>
               </div>
-            </CollapsibleTrigger>
+            </CollapsibleTrigger> */}
 
             <CollapsibleContent className="space-y-2">
               <p className="text-sm text-muted-foreground">

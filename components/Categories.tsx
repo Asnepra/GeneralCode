@@ -54,12 +54,12 @@ export const Categories = ({ data }: CategoriesProps) => {
             !countryId ? "bg-primary/25" : "bg-primary/10"
           )}
         >
-          Add/Modify Country
+          Add Country
         </button>
       </Link>
       {data.map((item) => (
         <button
-          onClick={() => onClick(item.id)}
+          onClick={() => onClick(item.id.toString())}
           className={cn(
             `
             flex 
@@ -76,7 +76,7 @@ export const Categories = ({ data }: CategoriesProps) => {
             hover:opacity-75 
             transition
           `,
-            item.id === countryId ? "bg-primary/25" : "bg-primary/10"
+            item.id.toString() === countryId ? "bg-primary/25" : "bg-primary/10"
           )}
           key={item.id}
         >

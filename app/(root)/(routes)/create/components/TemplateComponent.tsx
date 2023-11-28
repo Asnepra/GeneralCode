@@ -117,7 +117,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center space-y-2 space-x-2">
         <Select
           onValueChange={(value) => {
-            handleCountrySelect(value);
+            handleCountrySelect(+value);
           }}
         >
           <SelectTrigger className="max-w-xl mx-auto">
