@@ -1,10 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import CountrySelect from "./components/CountrySelect";
 import axios from "axios";
 import { TemplateMasterContent, columns } from "./components/column";
 import { DataTable } from "./components/TemplateComponent";
-import { Separator } from "@components/ui/separator";
 
 const CreateFile = () => {
   const [countryCategories, setCountryCategories] = useState([]);

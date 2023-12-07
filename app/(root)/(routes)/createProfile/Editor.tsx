@@ -8,7 +8,11 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import axios from "axios";
 
-const EditorPage = ({ onDataChanged, index }) => {
+type EditorPageProps = {
+  onDataChanged: (index: number, data: string) => void;
+  index: number;
+};
+const EditorPage: React.FC<EditorPageProps> = ({ onDataChanged, index }) => {
   const [editorContent, setEditorContent] = useState("");
 
   const handleEditorChange = (event: any, editor: { getData: () => any }) => {
