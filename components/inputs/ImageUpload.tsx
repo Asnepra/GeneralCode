@@ -61,7 +61,11 @@ const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
             <Image
               fill
               alt="Upload"
-              src={URL.createObjectURL(selectedFile)}
+              src={
+                selectedFile instanceof File
+                  ? URL.createObjectURL(selectedFile)
+                  : selectedFile
+              }
               className="rounded-lg object-contain"
             />
           ) : (
@@ -69,7 +73,11 @@ const ImageUpload = ({ onChange, disabled, value }: ImageUploadProps) => {
             <Image
               fill
               alt="Upload"
-              src={value || "/placeholder.svg"}
+              src={
+                value instanceof File
+                  ? URL.createObjectURL(value)
+                  : value || "/placeholder.svg"
+              }
               className="rounded-lg object-contain"
             />
           )}
