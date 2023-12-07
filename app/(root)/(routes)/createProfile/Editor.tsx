@@ -24,8 +24,8 @@ const EditorPage: React.FC<EditorPageProps> = ({ onDataChanged, index }) => {
   return (
     <div className="p-2">
       <CKEditor
-        editor={ClassicEditor}
-        onChange={handleEditorChange}
+        editor={ClassicEditor as any}
+        onChange={handleEditorChange as any}
         data={editorContent}
       />
     </div>

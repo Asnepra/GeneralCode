@@ -26,7 +26,7 @@ export const GET = async (
     //   console.log("documentId FROM Api \n" + documentId);
     // }
 
-    const isNumeric = !isNaN(documentId);
+    const isNumeric = !isNaN(parseInt(documentId));
     //console.log("isNumeric", isNumeric);
     var result;
     if (isNumeric) {

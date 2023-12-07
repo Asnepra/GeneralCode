@@ -2,9 +2,7 @@
 import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
-import jspdf from "jspdf";
 // Import jsPDF
-import html2canvas from "html2canvas";
 import { Button } from "@components/ui/button";
 
 // Define an interface for the API response
@@ -34,7 +32,6 @@ const PreviewCountryProfile = () => {
     // Get URL parameters from the current URL
     const params = new URLSearchParams(window.location.search);
     const countryId = params.get("countryId");
-    const countrySelected = params.get("countrySelected");
     const selectedTemplates = params.get("selectedTemplates");
 
     // Combine countryId and selectedTemplates into one string
@@ -54,11 +51,6 @@ const PreviewCountryProfile = () => {
         setError(error);
       });
   }, []);
-  const generatePDF = () => {
-    const doc = new jspdf();
-    doc.text("Hello, PDF!", 10, 10);
-    doc.save("test.pdf");
-  };
 
   const downloadPDF = () => {
     const urlParam = encodeURIComponent(window.location.href); // Encode the URL
