@@ -28,7 +28,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ openLoginModel }) => {
     setMenuIsOpen(false);
     setIconState(false);
     loginModal.onOpen();
-  }, []);
+  }, [loginModal]);
 
   useEffect(() => {
     //uncomment to load the loginModal on Home Page

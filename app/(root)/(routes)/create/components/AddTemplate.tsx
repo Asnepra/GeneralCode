@@ -202,7 +202,7 @@ const AddTemplate = () => {
                       <DialogHeader>
                         <DialogTitle>Add Template</DialogTitle>
                         <DialogDescription>
-                          Create a new Template. Click save when you're done.
+                          Create a new Template. Click save when you are done.
                         </DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">

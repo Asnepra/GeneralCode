@@ -189,7 +189,7 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
           console.error("Error posting data:", error);
         });
     }
-  }, [selectedCountry]);
+  }, [form, selectedCountry]);
 
   const [isOpen, setIsOpen] = React.useState(false);
   return (
