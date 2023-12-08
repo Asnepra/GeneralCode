@@ -63,7 +63,7 @@ export function DataTable<TData, TValue>({
   const handleCreateProfile = () => {
     const selectedTemplates = table
       .getFilteredSelectedRowModel()
-      .rows.map((row) => row.original.id);
+      .rows.map((row) => (row.original as any).id);
 
     if (countrySelected === -1) {
       toast.error("Select country First");
