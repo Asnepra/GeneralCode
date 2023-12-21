@@ -38,7 +38,7 @@ const PreviewCountryProfile = () => {
     const data = `${countryId},${selectedTemplates}`;
 
     // Construct the API URL with the combined data
-    const apiUrl = `http://localhost:3000/api/template_details/${data}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/template_details/${data}`;
 
     // Make the API request
     axios
@@ -56,7 +56,7 @@ const PreviewCountryProfile = () => {
     const urlParam = encodeURIComponent(window.location.href); // Encode the URL
 
     // Define the base URL of your API endpoint
-    const baseUrl = `http://localhost:3000/api/country_profile_pdf/${urlParam}`;
+    const baseUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/country_profile_pdf/${urlParam}`;
 
     // Make a GET request to the constructed API URL using Axios
     console.log(`Downloading ${urlParam}`);

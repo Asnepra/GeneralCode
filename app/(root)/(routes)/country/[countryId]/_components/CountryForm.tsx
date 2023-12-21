@@ -3,12 +3,18 @@ import React, { useState, useEffect } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import axios from "axios";
-import { Collapsible, CollapsibleContent } from "@/components/ui/collapsible";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,12 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@components/ui/select";
-
+import Link from "next/link";
 import { Separator } from "@components/ui/separator";
 import ImageUpload from "@components/inputs/ImageUpload";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
 import { Wand2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CountryFormProps {
   //if the country doesn't exist it returns null
@@ -80,7 +87,7 @@ const formSchema = z.object({
   ),
 });
 
-const CountryForm = ({ data, initialdata }: CountryFormProps) => {
+const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: initialdata || {

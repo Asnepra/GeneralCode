@@ -6,7 +6,7 @@ const RootPage = async () => {
   var countryCategories = [];
   try {
     const response = await axios.get(
-      "http://localhost:3000/api/country_category"
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/country_category`
     ); // Specify the correct URL with port 3000
     countryCategories = response.data;
     //console.log(countryCategories);

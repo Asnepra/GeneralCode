@@ -1,7 +1,7 @@
 import { Categories } from "@components/Categories";
 import { SearchInput } from "@components/search-input";
 import axios from "axios";
-import CountryForm from "./components/CountryForm";
+import CountryForm from "./_components/CountryForm";
 
 /**
  *
