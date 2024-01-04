@@ -30,15 +30,17 @@ const PreviewCountryProfile = () => {
 
   useEffect(() => {
     // Get URL parameters from the current URL
-    const params = new URLSearchParams(window.location.search);
-    const countryId = params.get("countryId");
-    const selectedTemplates = params.get("selectedTemplates");
-
-    // Combine countryId and selectedTemplates into one string
-    const data = `${countryId},${selectedTemplates}`;
-
-    // Construct the API URL with the combined data
-    const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/template_details/${data}`;
+    var params;
+    var apiUrl = "";
+    if (typeof window !== "undefined") {
+      params = new URLSearchParams(window.location.search);
+      const countryId = params.get("countryId");
+      const selectedTemplates = params.get("selectedTemplates");
+      // Combine countryId and selectedTemplates into one string
+      const data = `${countryId},${selectedTemplates}`;
+      // Construct the API URL with the combined data
+      apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/template_details/${data}`;
+    }
 
     // Make the API request
     axios
@@ -72,7 +74,10 @@ const PreviewCountryProfile = () => {
           const dataUri = URL.createObjectURL(blob);
 
           // Open the PDF in a new browser tab
-          const newTab = window.open(dataUri, "_blank");
+          var newTab = undefined;
+          if (typeof window !== undefined) {
+            newTab = window.open(dataUri, "_blank");
+          }
           if (newTab) {
             newTab.focus(); // Focus on the new tab
           } else {
