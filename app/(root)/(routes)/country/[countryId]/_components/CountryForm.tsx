@@ -127,10 +127,10 @@ const CountryForm = ({ countryId, data, initialdata }: CountryFormProps) => {
         .patch(`/api/country_category/add`, patchCountryData, config)
         .then((response) => {
           console.log("Added to backend\n");
-          if (typeof window !== "undefined") {
-            // Code that relies on the global object (e.g., window or self)
-            window.location.reload();
-          }
+          //if (typeof window !== "undefined") {
+          // Code that relies on the global object (e.g., window or self)
+          window.location.reload();
+          //}
 
           // Reload the page
           // ... (your redirect logic here)

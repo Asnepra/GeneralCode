@@ -174,10 +174,10 @@ const AddTemplate = () => {
         // ... (your redirect logic here)
         router.push("/create");
         router.refresh();
-        if (typeof window !== "undefined") {
-          window.location.reload();
-        }
-        //window.location.reload(); // Reload the page
+        // if (typeof window !== "undefined") {
+        //   window.location.reload();
+        // }
+        window.location.reload(); // Reload the page
       })
       .catch((error) => {
         console.error("Error posting data:", error);
